@@ -15,6 +15,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           alt="Fayette Flyer"
           width={1584}
           height={672}
+          quality={80}
           className="h-40 w-auto object-contain"
         />
       </Link>
@@ -29,6 +30,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           alt="Fayette Flyer"
           width={1584}
           height={672}
+          quality={80}
           className="h-48 w-auto object-contain"
         />
       </Link>
@@ -43,6 +45,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
         alt="Fayette Flyer"
         width={1584}
         height={672}
+        quality={80}
         className="h-12 w-auto sm:h-14 md:h-15 object-contain shrink-0"
       />
     </Link>

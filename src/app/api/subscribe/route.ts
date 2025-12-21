@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       utm_source: utm_source || "website",
       utm_medium: utm_medium || "subscribe_form",
       utm_campaign: utm_campaign || undefined,
-      referring_site: "https://www.fayetteflyer.com",
+      referring_site: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com",
     });
 
     return NextResponse.json({
@@ -44,7 +44,9 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Subscription error:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Subscription error:", error);
+    }
 
     // Handle specific Beehiiv errors
     if (error instanceof Error) {

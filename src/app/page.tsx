@@ -26,7 +26,9 @@ export default async function HomePage() {
     featuredIssue = latestIssues[0] || null;
   } catch (error) {
     // Handle API error gracefully - show empty state
-    console.error("Failed to fetch issues:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch issues:", error);
+    }
   }
 
   const websiteSchema = generateWebsiteSchema();
@@ -52,6 +54,8 @@ export default async function HomePage() {
                 alt="Starrs Mill, historic Fayette County landmark"
                 width={1920}
                 height={400}
+                quality={85}
+                sizes="100vw"
                 priority
                 className="w-full h-64 sm:h-80 lg:h-96 object-cover"
               />
@@ -141,7 +145,7 @@ export default async function HomePage() {
               Local News with Character
             </h2>
             <p className="text-slate text-lg mb-8 max-w-2xl mx-auto">
-              The Fayette Flyer covers what matters most to our community—from local
+              The Fayette Flyer covers what matters most to our community. From local
               government decisions to small business openings, community events to
               high school sports. We&apos;re your neighbors, covering our neighbors.
             </p>

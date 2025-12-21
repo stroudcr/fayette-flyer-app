@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Issue } from "@/lib/beehiiv/types";
 
 interface IssueCardProps {
@@ -19,9 +20,13 @@ export function IssueCard({ issue, featured = false }: IssueCardProps) {
         <Link href={`/issues/${issue.slug}`} className="block">
           {issue.thumbnailUrl && (
             <div className="mb-4 -mx-6 -mt-6 overflow-hidden rounded-t-lg">
-              <img
+              <Image
                 src={issue.thumbnailUrl}
                 alt={issue.title}
+                width={800}
+                height={400}
+                quality={75}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>

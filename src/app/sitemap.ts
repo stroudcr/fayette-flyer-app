@@ -56,7 +56,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
   } catch (error) {
-    console.error("Failed to fetch issues for sitemap:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch issues for sitemap:", error);
+    }
   }
 
   return [...staticPages, ...issuePages];

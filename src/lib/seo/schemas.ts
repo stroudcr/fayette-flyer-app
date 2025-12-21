@@ -45,7 +45,7 @@ export function generateOrganizationSchema() {
       latitude: SITE_CONFIG.location.latitude,
       longitude: SITE_CONFIG.location.longitude,
     },
-    foundingDate: "2024",
+    foundingDate: "2025",
     description: `${SITE_CONFIG.location.county}'s trusted source for hyperlocal news, events, and community updates covering ${SITE_CONFIG.cities.join(", ")}, Georgia.`,
   };
 }

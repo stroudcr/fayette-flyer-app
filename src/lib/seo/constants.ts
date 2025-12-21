@@ -1,8 +1,8 @@
 export const SITE_CONFIG = {
   name: "Fayette Flyer",
   tagline: "Local News with Character",
-  url: "https://www.fayetteflyer.com",
-  email: "chad@fayetteflyer.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com",
+  email: "info@fayetteflyer.com",
   locale: "en_US",
 
   // Location data for Fayette County, GA
@@ -31,8 +31,8 @@ export const SITE_CONFIG = {
   },
 
   // Default images
-  defaultOgImage: "https://www.fayetteflyer.com/og-default.png",
-  logo: "https://www.fayetteflyer.com/logo.png",
+  defaultOgImage: "https://www.fayetteflyer.com/og-default.jpg",
+  logo: "https://www.fayetteflyer.com/FF_Logo.JPG",
   logoWidth: 600,
   logoHeight: 60,
 };

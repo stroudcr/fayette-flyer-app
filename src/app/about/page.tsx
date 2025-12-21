@@ -38,7 +38,7 @@ export default function AboutPage() {
                 The Fayette Flyer exists to keep Fayette County residents informed
                 about what matters most in their community. From local government
                 decisions that affect your daily life to small business openings,
-                community events, and high school sports—we cover the stories that
+                community events, and high school sports. We cover the stories that
                 bring our neighbors together.
               </p>
 
@@ -76,15 +76,6 @@ export default function AboutPage() {
                   remarkable things and the places that make Fayette County unique.
                 </li>
               </ul>
-
-              <h2>Our Commitment</h2>
-              <p>
-                We&apos;re committed to accurate, fair, and timely reporting. We
-                don&apos;t have a political agenda—we simply want to inform our
-                neighbors about what&apos;s happening in our shared community. When
-                we make mistakes, we correct them promptly and transparently.
-              </p>
-
               <h2>Stay Connected</h2>
               <p>
                 The Fayette Flyer is delivered free to your inbox every week.

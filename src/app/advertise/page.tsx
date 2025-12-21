@@ -46,7 +46,7 @@ export default function AdvertisePage() {
               <ul>
                 <li>
                   <strong>Targeted Reach:</strong> Your message goes directly to
-                  Fayette County residents—the people most likely to become your
+                  Fayette County residents, the people most likely to become your
                   customers.
                 </li>
                 <li>

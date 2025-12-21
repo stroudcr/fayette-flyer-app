@@ -1,9 +1,13 @@
 import { Metadata } from "next";
 import { Header, Footer } from "@/components";
+import { SITE_CONFIG } from "@/lib/seo/constants";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Privacy Policy for the Fayette Flyer newsletter and website.",
+  alternates: {
+    canonical: `${SITE_CONFIG.url}/privacy`,
+  },
 };
 
 export default function PrivacyPage() {
@@ -18,7 +22,7 @@ export default function PrivacyPage() {
             <h1 className="font-serif font-bold text-3xl sm:text-4xl text-navy mb-4">
               Privacy Policy
             </h1>
-            <p className="text-slate">Last updated: December 2024</p>
+            <p className="text-slate">Last updated: December 21, 2025</p>
           </div>
         </section>
 
@@ -39,7 +43,10 @@ export default function PrivacyPage() {
               <ul>
                 <li>
                   <strong>Email Address:</strong> When you subscribe to our
-                  newsletter, we collect your email address.
+                  newsletter, we collect your email address and subscription
+                  metadata including source information (utm_source, utm_medium,
+                  utm_campaign) and referring site data to help us understand
+                  how you found us.
                 </li>
                 <li>
                   <strong>Contact Information:</strong> If you contact us through
@@ -51,14 +58,10 @@ export default function PrivacyPage() {
               <h3>Information Collected Automatically</h3>
               <ul>
                 <li>
-                  <strong>Usage Data:</strong> We may collect information about
-                  how you interact with our website, including pages visited and
-                  time spent on the site.
-                </li>
-                <li>
-                  <strong>Device Information:</strong> We may collect information
-                  about the device you use to access our website, including
-                  browser type and operating system.
+                  <strong>Hosting Analytics:</strong> Our website is hosted on
+                  Vercel, which may collect basic analytics data including pages
+                  visited, referring sites, and general device information for
+                  platform performance and security purposes.
                 </li>
               </ul>
 
@@ -74,10 +77,25 @@ export default function PrivacyPage() {
               <h2>Newsletter Service</h2>
               <p>
                 Our newsletter is delivered through Beehiiv, a third-party email
-                service provider. When you subscribe, your email address is stored
-                with Beehiiv in accordance with their privacy practices. You can
-                unsubscribe at any time by clicking the unsubscribe link in any
-                newsletter email.
+                service provider. When you subscribe, your email address and
+                subscription information are stored with Beehiiv. Beehiiv manages
+                subscription status, delivery, and analytics in accordance with
+                their privacy policy. You will receive a welcome email upon
+                subscribing. You can unsubscribe at any time by clicking the
+                unsubscribe link in any newsletter email.
+              </p>
+              <p>
+                For more information about how Beehiiv handles your data, please
+                visit{" "}
+                <a
+                  href="https://www.beehiiv.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-navy hover:underline"
+                >
+                  Beehiiv&apos;s Privacy Policy
+                </a>
+                .
               </p>
 
               <h2>Data Sharing</h2>
@@ -87,9 +105,17 @@ export default function PrivacyPage() {
               </p>
               <ul>
                 <li>
-                  <strong>Service Providers:</strong> Third-party services that
-                  help us operate our website and deliver our newsletter (e.g.,
-                  Beehiiv, Vercel).
+                  <strong>Service Providers:</strong> We use trusted third-party
+                  services to operate our website and deliver content:
+                  <ul>
+                    <li>
+                      <strong>Beehiiv</strong> - Newsletter delivery and subscriber
+                      management
+                    </li>
+                    <li>
+                      <strong>Vercel</strong> - Website hosting and deployment
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   <strong>Legal Requirements:</strong> When required by law or to
@@ -99,10 +125,12 @@ export default function PrivacyPage() {
 
               <h2>Cookies</h2>
               <p>
-                Our website may use cookies to enhance your experience. Cookies
-                are small files stored on your device that help us understand how
-                you use our site. You can control cookie settings through your
-                browser preferences.
+                Our website and hosting provider (Vercel) may use essential
+                cookies for functionality and performance. These cookies help
+                ensure the website operates correctly and may include session
+                management and security features. You can control cookie settings
+                through your browser preferences, though some functionality may be
+                limited if cookies are disabled.
               </p>
 
               <h2>Data Security</h2>
@@ -119,6 +147,25 @@ export default function PrivacyPage() {
                 <li>Request correction of inaccurate information</li>
                 <li>Request deletion of your information</li>
                 <li>Unsubscribe from our newsletter at any time</li>
+              </ul>
+
+              <h2>Data Retention</h2>
+              <p>
+                We retain your personal information only as long as necessary for
+                the purposes outlined in this Privacy Policy:
+              </p>
+              <ul>
+                <li>
+                  <strong>Newsletter Subscriptions:</strong> Your email and
+                  subscription data are retained by Beehiiv for as long as you
+                  remain subscribed. Upon unsubscribing, your data is removed in
+                  accordance with Beehiiv&apos;s retention policies.
+                </li>
+                <li>
+                  <strong>Contact Form Submissions:</strong> Messages sent through
+                  our contact form are retained for as long as necessary to respond
+                  to your inquiry and maintain a record of our correspondence.
+                </li>
               </ul>
 
               <h2>Children&apos;s Privacy</h2>
@@ -141,8 +188,8 @@ export default function PrivacyPage() {
                 information, please contact us at:
               </p>
               <p>
-                <a href="mailto:privacy@fayetteflyer.com">
-                  privacy@fayetteflyer.com
+                <a href="mailto:info@fayetteflyer.com" className="text-navy hover:underline">
+                  info@fayetteflyer.com
                 </a>
               </p>
             </div>

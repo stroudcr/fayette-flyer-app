@@ -44,7 +44,9 @@ async function beehiivFetch<T>(
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error(`Beehiiv API error: ${response.status} - ${errorText}`);
+    if (process.env.NODE_ENV === "development") {
+      console.error(`Beehiiv API error: ${response.status} - ${errorText}`);
+    }
     throw new Error(`Beehiiv API error: ${response.status}`);
   }
 

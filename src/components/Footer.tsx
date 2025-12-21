@@ -18,6 +18,7 @@ export function Footer() {
                   alt="Fayette Flyer"
                   width={200}
                   height={80}
+                  quality={75}
                   className="h-20 w-auto"
                 />
               </Link>
@@ -65,12 +66,17 @@ export function Footer() {
           {/* Legal column */}
           <div>
             <h3 className="font-semibold text-sm uppercase tracking-wider mb-4 text-white">
-              Legal
+              Resources
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/privacy" className="text-gray-100 hover:text-white text-sm transition-colors">
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-gray-100 hover:text-white text-sm transition-colors">
+                  Terms of Service
                 </Link>
               </li>
             </ul>

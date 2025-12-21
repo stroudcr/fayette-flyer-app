@@ -43,9 +43,9 @@ export const metadata: Metadata = {
       "Your trusted source for Fayette County GA news. Local news, events, and community updates from Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey.",
     images: [
       {
-        url: `${SITE_CONFIG.url}/og-default.svg`,
-        width: 1200,
-        height: 630,
+        url: `${SITE_CONFIG.url}/og-default.jpg`,
+        width: 1584,
+        height: 672,
         alt: "Fayette Flyer - Local News with Character for Fayette County, GA",
       },
     ],
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     title: "Fayette Flyer | Fayette County GA News",
     description:
       "Your trusted source for Fayette County GA news. Local news from Peachtree City, Fayetteville, Tyrone & more.",
-    images: [`${SITE_CONFIG.url}/og-default.svg`],
+    images: [`${SITE_CONFIG.url}/og-default.jpg`],
   },
   metadataBase: new URL(SITE_CONFIG.url),
   alternates: {

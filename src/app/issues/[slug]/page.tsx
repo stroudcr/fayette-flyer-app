@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
 import { Header, Footer, SubscribeForm, JsonLd } from "@/components";
 import { getIssueBySlug, getAdjacentIssues, getAllIssues } from "@/lib/beehiiv/posts";
 import { generateNewsArticleSchema, generateBreadcrumbSchema } from "@/lib/seo/schemas";
@@ -199,7 +200,7 @@ export default async function IssuePage({ params }: Props) {
             {issue.content ? (
               <div
                 className="prose prose-lg prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: issue.content }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(issue.content) }}
               />
             ) : (
               <div className="text-center py-12">

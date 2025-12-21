@@ -19,7 +19,9 @@ export default async function IssuesPage() {
   try {
     issues = await getAllIssues();
   } catch (error) {
-    console.error("Failed to fetch issues:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch issues:", error);
+    }
   }
 
   return (
