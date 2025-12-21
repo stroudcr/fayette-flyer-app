@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface LogoProps {
   variant?: "full" | "stacked" | "icon";
@@ -9,10 +10,12 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
   if (variant === "icon") {
     return (
       <Link href="/" className={`block ${className}`}>
-        <img
+        <Image
           src="/FF_Logo.JPG"
           alt="Fayette Flyer"
-          className="w-40 h-40"
+          width={1584}
+          height={672}
+          className="h-40 w-auto object-contain"
         />
       </Link>
     );
@@ -21,10 +24,12 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
   if (variant === "stacked") {
     return (
       <Link href="/" className={`flex flex-col items-center gap-2 ${className}`}>
-        <img
+        <Image
           src="/FF_Logo.JPG"
           alt="Fayette Flyer"
-          className="w-48 h-48"
+          width={1584}
+          height={672}
+          className="h-48 w-auto object-contain"
         />
       </Link>
     );
@@ -33,10 +38,12 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
   // Full horizontal variant
   return (
     <Link href="/" className={`flex items-center gap-3 ${className}`}>
-      <img
+      <Image
         src="/FF_Logo.JPG"
         alt="Fayette Flyer"
-        className="w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30 shrink-0"
+        width={1584}
+        height={672}
+        className="h-12 w-auto sm:h-14 md:h-15 object-contain shrink-0"
       />
     </Link>
   );
