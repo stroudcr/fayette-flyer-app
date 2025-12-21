@@ -41,7 +41,7 @@ export function SubscribeForm({ variant = "inline", className = "" }: SubscribeF
       }
 
       setStatus("success");
-      setMessage("Welcome to the Fayette Flyer! Check your inbox.");
+      setMessage("Welcome to the Fayette Flyer!");
       setEmail("");
     } catch (error) {
       setStatus("error");
