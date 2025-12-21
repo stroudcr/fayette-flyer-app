@@ -41,9 +41,11 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
       <Image
         src="/FF_logo.svg"
         alt="Fayette Flyer"
-        width={160}
-        height={160}
-        className="w-40 h-40 flex-shrink-0"
+        width={64}
+        height={64}
+        sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+        priority
+        className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex-shrink-0"
       />
     </Link>
   );

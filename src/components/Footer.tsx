@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "./Logo";
+import Image from "next/image";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,7 +11,15 @@ export function Footer() {
           {/* Brand column */}
           <div className="md:col-span-2">
             <div className="mb-3">
-              <Logo variant="full" className="[&_div:first-of-type]:text-white [&_div:last-of-type]:text-white/80" />
+              <Link href="/">
+                <Image
+                  src="/Footer.JPEG"
+                  alt="Fayette Flyer"
+                  width={200}
+                  height={80}
+                  className="h-20 w-auto"
+                />
+              </Link>
             </div>
             <p className="text-gray-100 text-sm max-w-sm">
               Your trusted source for news and events in Fayette County, Georgia.
