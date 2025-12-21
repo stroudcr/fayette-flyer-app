@@ -1,0 +1,11 @@
+<svg width="600" height="60" viewBox="0 0 600 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gold circle with airplane icon -->
+  <circle cx="30" cy="30" r="25" fill="#aa935d"/>
+  <path d="M30 12c-1.1 0-2 .9-2 2v7.33l-10.67 6.67v2.67l10.67-3.33v6.67l-2.67 2v2l4.67-1.33 4.67 1.33v-2l-2.67-2v-6.67l10.67 3.33V24L32 17.33V14c0-1.1-.9-2-2-2z" fill="white"/>
+
+  <!-- Fayette Flyer text -->
+  <text x="70" y="42" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#1c1e4d">Fayette Flyer</text>
+
+  <!-- Tagline -->
+  <text x="330" y="38" font-family="Georgia, serif" font-size="16" font-style="italic" fill="#374151">Local News with Character</text>
+</svg>

@@ -1,26 +1,139 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors from Logo */
+  --navy: #1c1e4d;
+  --navy-dark: #151639;
+  --gold: #aa935d;
+  --slate: #374151;
+  --paper: #fafaf9;
+  --white: #ffffff;
+
+  /* Semantic Colors */
+  --background: var(--paper);
+  --foreground: var(--slate);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
+  --color-gold: var(--gold);
+  --color-slate: var(--slate);
+  --color-paper: var(--paper);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-source-serif);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Typography for editorial feel */
+h1:not(footer h1), h2:not(footer h2), h3:not(footer h3), h4:not(footer h4), h5:not(footer h5), h6:not(footer h6) {
+  font-family: var(--font-serif), Georgia, serif;
+  color: var(--navy);
+}
+
+/* Link styles */
+a:not(footer a) {
+  color: var(--navy);
+  text-decoration: none;
+}
+
+a:not(footer a):hover {
+  text-decoration: underline;
+}
+
+/* Prose overrides for Beehiiv content */
+.prose {
+  --tw-prose-body: var(--slate);
+  --tw-prose-headings: var(--navy);
+  --tw-prose-links: var(--navy);
+  --tw-prose-bold: var(--navy);
+  --tw-prose-quotes: var(--slate);
+  --tw-prose-quote-borders: var(--gold);
+  max-width: 75ch;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.prose blockquote {
+  border-left-color: var(--gold);
+  font-style: italic;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: var(--navy);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--navy-dark);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--navy);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--navy);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--navy);
+  color: white;
+  text-decoration: none;
+}
+
+/* Card styles */
+.card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Sponsor label with gold accent */
+.sponsor-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate);
+}
+
+.sponsor-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: var(--gold);
+  border-radius: 50%;
 }
