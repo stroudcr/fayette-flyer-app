@@ -62,6 +62,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_CONFIG.url,
   },
+  icons: {
+    icon: "/favicon.svg",
+  },
   // Geo-targeting meta tags for local SEO
   other: {
     "geo.region": "US-GA",
