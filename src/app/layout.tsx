@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { JsonLd } from "@/components";
 import { generateOrganizationSchema } from "@/lib/seo/schemas";
@@ -85,6 +86,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${sourceSerif.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
