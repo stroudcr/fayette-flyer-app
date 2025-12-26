@@ -7,6 +7,14 @@ import { getIssueBySlug, getAdjacentIssues, getAllIssues } from "@/lib/beehiiv/p
 import { generateNewsArticleSchema, generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 
+// Route Segment Config
+// Enable dynamic params to allow new newsletter slugs not pre-generated at build time
+export const dynamicParams = true;
+
+// Revalidate every 5 minutes to match Beehiiv API cache timing
+// This ensures pages stay fresh while maintaining good performance
+export const revalidate = 300;
+
 interface Props {
   params: Promise<{ slug: string }>;
 }
