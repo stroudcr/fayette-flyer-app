@@ -63,8 +63,28 @@ export const metadata: Metadata = {
     canonical: SITE_CONFIG.url,
   },
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      {
+        url: "/icon.png",
+        type: "image/png",
+        sizes: "192x192",
+      },
+      {
+        url: "/favicon.svg",
+        type: "image/svg+xml",
+        sizes: "any",
+      },
+    ],
+    apple: [
+      {
+        url: "/apple-icon.png",
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
+    // favicon.ico automatically served by Next.js from src/app/favicon.ico
   },
+  manifest: "/manifest.json",
   // Geo-targeting meta tags for local SEO
   other: {
     "geo.region": "US-GA",
