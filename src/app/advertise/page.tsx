@@ -73,12 +73,6 @@ export default function AdvertisePage() {
                 action.
               </p>
 
-              <h3>Dedicated Email</h3>
-              <p>
-                A standalone email sent to our subscriber list featuring your
-                business, event, or special offer.
-              </p>
-
               <h3>Website Placement</h3>
               <p>
                 Sponsor placement on our website&apos;s homepage and issue pages,
