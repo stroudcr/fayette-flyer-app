@@ -201,6 +201,32 @@ export default async function IssuePage({ params }: Props) {
                   a: ["href", "target", "rel", "title"],
                   "*": ["class", "id", "style"],
                 },
+                allowedStyles: {
+                  "*": {
+                    // Allow common safe styles but block font-family, max-width, and CSS custom properties
+                    "color": [/.*/],
+                    "background-color": [/.*/],
+                    "text-align": [/.*/],
+                    "padding": [/.*/],
+                    "padding-top": [/.*/],
+                    "padding-bottom": [/.*/],
+                    "padding-left": [/.*/],
+                    "padding-right": [/.*/],
+                    "margin": [/.*/],
+                    "margin-top": [/.*/],
+                    "margin-bottom": [/.*/],
+                    "margin-left": [/.*/],
+                    "margin-right": [/.*/],
+                    "width": [/.*/],
+                    "height": [/.*/],
+                    "border": [/.*/],
+                    "border-radius": [/.*/],
+                    "display": [/.*/],
+                    "line-height": [/.*/],
+                    "font-size": [/.*/],
+                    "font-weight": [/.*/],
+                  },
+                },
                 allowedIframeHostnames: ["www.youtube.com", "player.vimeo.com"],
               })} />
             ) : (

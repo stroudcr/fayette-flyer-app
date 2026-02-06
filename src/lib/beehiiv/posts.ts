@@ -1,6 +1,7 @@
 import "server-only";
 import { getPosts, getAllPosts, getPostBySlug } from "./client";
 import type { BeehiivPost, Issue } from "./types";
+import { cleanBeehiivContent } from "./content";
 
 // Transform Beehiiv post to Issue format
 function transformPost(post: BeehiivPost): Issue {
@@ -27,7 +28,9 @@ function transformPost(post: BeehiivPost): Issue {
     publishDate,
     thumbnailUrl: post.thumbnail_url,
     excerpt,
-    content: post.content?.free?.web,
+    content: post.content?.free?.web
+      ? cleanBeehiivContent(post.content.free.web)
+      : undefined,
     authors: post.authors?.map((a) => ({
       name: a.name,
       avatar: a.profile_picture,

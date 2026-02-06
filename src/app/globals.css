@@ -75,6 +75,25 @@ a:not(footer a):hover {
   font-style: italic;
 }
 
+/* Beehiiv content overrides — defense-in-depth */
+.prose .rendered-post {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.prose [style*="font-family"] {
+  font-family: inherit !important;
+}
+
+.prose .bg-wt-background {
+  background: transparent !important;
+}
+
+.prose .text-wt-text-on-background {
+  color: inherit !important;
+}
+
 /* Button styles */
 .btn-primary {
   background-color: var(--navy);
