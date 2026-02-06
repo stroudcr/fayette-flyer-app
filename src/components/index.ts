@@ -4,3 +4,4 @@ export { Logo } from "./Logo";
 export { SubscribeForm } from "./SubscribeForm";
 export { IssueCard } from "./IssueCard";
 export { JsonLd } from "./JsonLd";
+export { FacebookIcon, InstagramIcon, XTwitterIcon, EmailIcon, CheckCircleIcon } from "./Icons";

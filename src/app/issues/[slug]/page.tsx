@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import sanitizeHtml from "sanitize-html";
 import { IssueContent } from "./IssueContent";
-import { Header, Footer, SubscribeForm, JsonLd } from "@/components";
+import { SubscribeForm, JsonLd, XTwitterIcon, FacebookIcon, EmailIcon } from "@/components";
 import { getIssueBySlug, getAdjacentIssues, getAllIssues } from "@/lib/beehiiv/posts";
 import { generateNewsArticleSchema, generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
@@ -49,13 +50,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       tags: ["Fayette County", "Georgia", "local news", "Peachtree City", "Fayetteville"],
       images: issue.thumbnailUrl
         ? [{ url: issue.thumbnailUrl, width: 1200, height: 630 }]
-        : [{ url: `${SITE_CONFIG.url}/og-default.svg`, width: 1200, height: 630 }],
+        : [{ url: `${SITE_CONFIG.url}/og-default.jpg`, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: issue.title,
       description,
-      images: [issue.thumbnailUrl || `${SITE_CONFIG.url}/og-default.svg`],
+      images: [issue.thumbnailUrl || `${SITE_CONFIG.url}/og-default.jpg`],
     },
     alternates: {
       canonical: articleUrl,
@@ -101,11 +102,9 @@ export default async function IssuePage({ params }: Props) {
   ]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <JsonLd data={newsArticleSchema} />
       <JsonLd data={breadcrumbSchema} />
-
-      <Header />
 
       <main className="flex-1">
         {/* Issue Header */}
@@ -164,9 +163,7 @@ export default async function IssuePage({ params }: Props) {
                 className="text-slate hover:text-navy transition-colors"
                 aria-label="Share on Twitter"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
+                <XTwitterIcon />
               </a>
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${SITE_CONFIG.url}/issues/${issue.slug}`)}`}
@@ -175,28 +172,14 @@ export default async function IssuePage({ params }: Props) {
                 className="text-slate hover:text-navy transition-colors"
                 aria-label="Share on Facebook"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
+                <FacebookIcon className="w-5 h-5" />
               </a>
               <a
                 href={`mailto:?subject=${encodeURIComponent(issue.title)}&body=${encodeURIComponent(`Check out this issue of the Fayette Flyer: ${SITE_CONFIG.url}/issues/${issue.slug}`)}`}
                 className="text-slate hover:text-navy transition-colors"
                 aria-label="Share via Email"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+                <EmailIcon />
               </a>
             </div>
           </div>
@@ -206,7 +189,20 @@ export default async function IssuePage({ params }: Props) {
         <article className="py-12 bg-paper">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             {issue.content ? (
-              <IssueContent content={issue.content} />
+              <IssueContent content={sanitizeHtml(issue.content, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "picture", "source", "video", "audio", "iframe"]),
+                allowedAttributes: {
+                  ...sanitizeHtml.defaults.allowedAttributes,
+                  img: ["src", "alt", "width", "height", "loading", "decoding", "srcset", "sizes"],
+                  iframe: ["src", "width", "height", "frameborder", "allowfullscreen", "allow", "title"],
+                  video: ["src", "controls", "width", "height", "poster"],
+                  audio: ["src", "controls"],
+                  source: ["src", "srcset", "type", "media", "sizes"],
+                  a: ["href", "target", "rel", "title"],
+                  "*": ["class", "id", "style"],
+                },
+                allowedIframeHostnames: ["www.youtube.com", "player.vimeo.com"],
+              })} />
             ) : (
               <div className="text-center py-12">
                 <p className="text-slate">
@@ -233,7 +229,7 @@ export default async function IssuePage({ params }: Props) {
                   href={`/issues/${adjacent.next.slug}`}
                   className="card group flex-1"
                 >
-                  <div className="text-sm text-slate mb-1">← Previous Issue</div>
+                  <div className="text-sm text-slate mb-1">&larr; Previous Issue</div>
                   <div className="font-serif font-bold text-navy group-hover:text-navy-dark transition-colors">
                     {adjacent.next.title}
                   </div>
@@ -247,7 +243,7 @@ export default async function IssuePage({ params }: Props) {
                   href={`/issues/${adjacent.prev.slug}`}
                   className="card group flex-1 text-right"
                 >
-                  <div className="text-sm text-slate mb-1">Next Issue →</div>
+                  <div className="text-sm text-slate mb-1">Next Issue &rarr;</div>
                   <div className="font-serif font-bold text-navy group-hover:text-navy-dark transition-colors">
                     {adjacent.prev.title}
                   </div>
@@ -259,8 +255,6 @@ export default async function IssuePage({ params }: Props) {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 }

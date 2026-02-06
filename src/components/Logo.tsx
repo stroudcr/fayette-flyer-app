@@ -16,6 +16,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           width={1584}
           height={672}
           quality={80}
+          sizes="160px"
           className="h-40 w-auto object-contain"
         />
       </Link>
@@ -31,6 +32,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           width={1584}
           height={672}
           quality={80}
+          sizes="192px"
           className="h-48 w-auto object-contain"
         />
       </Link>
@@ -46,6 +48,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
         width={1584}
         height={672}
         quality={80}
+        sizes="(max-width: 640px) 120px, (max-width: 768px) 140px, 160px"
         className="h-12 w-auto sm:h-14 md:h-15 object-contain shrink-0"
       />
     </Link>

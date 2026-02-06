@@ -17,7 +17,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-paper px-4">
+    <main className="flex-1 flex items-center justify-center bg-paper px-4">
       <div className="max-w-md w-full text-center">
         <h1 className="font-serif font-bold text-4xl text-navy mb-4">
           Something went wrong
@@ -38,6 +38,6 @@ export default function Error({
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

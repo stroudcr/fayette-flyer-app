@@ -93,7 +93,7 @@ export function SubscribeForm({ variant = "inline", className = "" }: SubscribeF
         {status === "error" && (
           <p className="text-red-600 text-sm mt-2 text-center">{message}</p>
         )}
-        <p className="text-white text-sm mt-3 text-center">
+        <p className="text-slate text-sm mt-3 text-center">
           Join thousands of Fayette County residents. Free, weekly delivery.
         </p>
       </form>

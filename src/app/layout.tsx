@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
-import { JsonLd } from "@/components";
+import { Header, Footer, JsonLd } from "@/components";
 import { generateOrganizationSchema } from "@/lib/seo/schemas";
 import { ALL_KEYWORDS, SITE_CONFIG } from "@/lib/seo/constants";
 
@@ -108,7 +108,11 @@ export default function RootLayout({
         <JsonLd data={organizationSchema} />
       </head>
       <body className={`${inter.variable} ${sourceSerif.variable} antialiased`}>
-        {children}
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          {children}
+          <Footer />
+        </div>
         <Analytics />
       </body>
     </html>
