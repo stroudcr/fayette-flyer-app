@@ -1,8 +1,9 @@
 import { Metadata } from "next";
-import { IssueCard, SubscribeForm } from "@/components";
+import { IssueCard, SubscribeForm, JsonLd } from "@/components";
 import { getAllIssues } from "@/lib/beehiiv/posts";
 import type { Issue } from "@/lib/beehiiv/types";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import { generateCollectionPageSchema } from "@/lib/seo/schemas";
 
 export const metadata: Metadata = {
   title: "News Archive | Fayette County GA Local News Issues",
@@ -24,8 +25,11 @@ export default async function IssuesPage() {
     }
   }
 
+  const collectionPageSchema = generateCollectionPageSchema(issues);
+
   return (
     <main className="flex-1 bg-paper">
+      <JsonLd data={collectionPageSchema} />
       {/* Page Header */}
       <section className="bg-white border-b border-gray-200 py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

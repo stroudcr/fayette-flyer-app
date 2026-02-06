@@ -93,8 +93,17 @@ export default async function IssuePage({ params }: Props) {
     day: "numeric",
   });
 
+  // Extract plain text from HTML content for articleBody schema field
+  const articleBody = issue.content
+    ? issue.content
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 5000)
+    : undefined;
+
   // Generate structured data schemas
-  const newsArticleSchema = generateNewsArticleSchema(issue, slug);
+  const newsArticleSchema = generateNewsArticleSchema(issue, slug, articleBody);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: SITE_CONFIG.url },
     { name: "Issues", url: `${SITE_CONFIG.url}/issues` },

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
-import { SubscribeForm } from "@/components";
+import { SubscribeForm, JsonLd } from "@/components";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import { generateAboutPageSchema } from "@/lib/seo/schemas";
 
 export const metadata: Metadata = {
   title: "About | Your Local Fayette County News Source",
@@ -12,8 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const aboutPageSchema = generateAboutPageSchema();
+
   return (
     <main className="flex-1">
+      <JsonLd data={aboutPageSchema} />
       {/* Page Header */}
       <section className="bg-white border-b border-gray-200 py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

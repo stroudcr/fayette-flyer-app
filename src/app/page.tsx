@@ -58,7 +58,7 @@ export default async function HomePage() {
             />
           </div>
 
-          <p className="text-slate text-lg sm:text-xl max-w-2xl mx-auto mb-8">
+          <p className="hero-description text-slate text-lg sm:text-xl max-w-2xl mx-auto mb-8">
             Stay connected with your community. Local news, events, and stories
             that matter to Fayette County residents. Delivered free to your inbox every week.
           </p>

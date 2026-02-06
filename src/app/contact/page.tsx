@@ -1,6 +1,7 @@
 import { Metadata } from "next";
-import { FacebookIcon, InstagramIcon } from "@/components";
+import { FacebookIcon, InstagramIcon, JsonLd } from "@/components";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import { generateContactPageSchema } from "@/lib/seo/schemas";
 
 export const metadata: Metadata = {
   title: "Contact | Fayette County News Tips & Inquiries",
@@ -12,8 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const contactPageSchema = generateContactPageSchema();
+
   return (
     <main className="flex-1">
+      <JsonLd data={contactPageSchema} />
       {/* Page Header */}
       <section className="bg-white border-b border-gray-200 py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

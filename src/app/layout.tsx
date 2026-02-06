@@ -24,6 +24,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  },
   title: {
     default: "Fayette Flyer | Fayette County GA News & Community Updates",
     template: "%s | Fayette Flyer - Fayette County News",
