@@ -25,7 +25,7 @@ export default function AboutPage() {
             About the Fayette Flyer
           </h1>
           <p className="text-slate text-lg">
-            Local news with character, delivered weekly.
+            First class local news, delivered twice a week.
           </p>
         </div>
       </section>

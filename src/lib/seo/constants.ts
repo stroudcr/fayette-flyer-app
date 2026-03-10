@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
   name: "Fayette Flyer",
-  tagline: "Local News with Character",
+  tagline: "First Class Local News",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com",
   email: "info@fayetteflyer.com",
   locale: "en_US",

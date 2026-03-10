@@ -41,7 +41,7 @@ export default async function HomePage() {
       <section className="bg-paper py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-serif font-bold text-4xl sm:text-5xl lg:text-6xl text-navy mb-8">
-            Fayette County News <br/> with Character
+            First Class <br/>Fayette County News
           </h1>
 
           {/* Starrs Mill landmark banner */}
@@ -133,7 +133,7 @@ export default async function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif font-bold text-2xl sm:text-3xl text-navy mb-6">
-            Local News with Character
+            First Class Local News
           </h2>
           <p className="text-slate text-lg mb-8 max-w-2xl mx-auto">
             The Fayette Flyer covers what matters most to our community. From local
