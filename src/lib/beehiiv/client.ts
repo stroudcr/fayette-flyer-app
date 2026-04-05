@@ -8,6 +8,10 @@ import type {
 
 const BEEHIIV_API_URL = "https://api.beehiiv.com/v2";
 
+export function hasBeehiivConfig(): boolean {
+  return Boolean(process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID);
+}
+
 function getApiKey(): string {
   const apiKey = process.env.BEEHIIV_API_KEY;
   if (!apiKey) {

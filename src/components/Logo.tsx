@@ -15,7 +15,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           alt="Fayette Flyer"
           width={1584}
           height={672}
-          quality={80}
+          quality={75}
           sizes="160px"
           className="h-40 w-auto object-contain"
         />
@@ -31,7 +31,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
           alt="Fayette Flyer"
           width={1584}
           height={672}
-          quality={80}
+          quality={75}
           sizes="192px"
           className="h-48 w-auto object-contain"
         />
@@ -39,7 +39,6 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
     );
   }
 
-  // Full horizontal variant
   return (
     <Link href="/" className={`flex items-center gap-3 ${className}`}>
       <Image
@@ -47,7 +46,7 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
         alt="Fayette Flyer"
         width={1584}
         height={672}
-        quality={80}
+        quality={75}
         sizes="(max-width: 640px) 120px, (max-width: 768px) 140px, 160px"
         className="h-12 w-auto sm:h-14 md:h-15 object-contain shrink-0"
       />

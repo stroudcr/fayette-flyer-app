@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SubscribeForm, IssueCard, JsonLd, CheckCircleIcon } from "@/components";
+import { SubscribeForm, IssueCard, JsonLd } from "@/components";
 import { getLatestIssues } from "@/lib/beehiiv/posts";
 import type { Issue } from "@/lib/beehiiv/types";
 import { generateWebsiteSchema } from "@/lib/seo/schemas";
@@ -10,14 +10,13 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Fayette County News | Local Updates from Peachtree City, Fayetteville & More",
   description:
-    "Get free weekly Fayette County GA news delivered to your inbox. Covering Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey local news, events, and community updates.",
+    "Get free twice-a-week Fayette County GA news delivered to your inbox. Covering Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey local news, events, and community updates.",
   alternates: {
     canonical: SITE_CONFIG.url,
   },
 };
 
 export default async function HomePage() {
-  // Fetch latest issues from Beehiiv
   let latestIssues: Issue[] = [];
   let featuredIssue: Issue | null = null;
 
@@ -25,7 +24,6 @@ export default async function HomePage() {
     latestIssues = await getLatestIssues(6);
     featuredIssue = latestIssues[0] || null;
   } catch (error) {
-    // Handle API error gracefully - show empty state
     if (process.env.NODE_ENV === "development") {
       console.error("Failed to fetch issues:", error);
     }
@@ -37,56 +35,58 @@ export default async function HomePage() {
     <main className="flex-1">
       <JsonLd data={websiteSchema} />
 
-      {/* Hero Section */}
-      <section className="bg-paper py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-serif font-bold text-4xl sm:text-5xl lg:text-6xl text-navy mb-8">
-            First Class <br/>Fayette County News
-          </h1>
-
-          {/* Starrs Mill landmark banner */}
-          <div className="relative w-screen left-1/2 right-1/2 -mx-[50vw] mb-8">
+      <section className="relative isolate overflow-hidden bg-navy">
+        <div className="absolute inset-0">
+          <div className="hero-image-drift absolute inset-0">
             <Image
               src="/starrs-mill.jpg"
               alt="Starrs Mill, historic Fayette County landmark"
-              width={1920}
-              height={400}
-              quality={85}
+              fill
+              quality={75}
               sizes="100vw"
               priority
-              className="w-full h-64 sm:h-80 lg:h-96 object-cover"
+              className="object-cover object-[58%_center]"
             />
           </div>
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(21,22,57,0.96)_0%,rgba(21,22,57,0.9)_42%,rgba(21,22,57,0.7)_62%,rgba(21,22,57,0.38)_80%,rgba(21,22,57,0.18)_100%)]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(21,22,57,0.18)_0%,rgba(21,22,57,0)_24%,rgba(21,22,57,0.2)_100%)]"></div>
+        </div>
 
-          <p className="hero-description text-slate text-lg sm:text-xl max-w-2xl mx-auto mb-8">
-            Stay connected with your community. Local news, events, and stories
-            that matter to Fayette County residents. Delivered free to your inbox every week.
-          </p>
-          <div id="subscribe">
-            <SubscribeForm variant="hero" />
+        <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl items-center px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
+          <div className="max-w-2xl text-white">
+            <div className="hero-fade-up mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4">
+              <div className="h-px w-10 bg-gold/70 sm:w-20"></div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-gold/90 sm:text-[11px]">
+                Fayette County, Georgia
+              </span>
+            </div>
+
+            <p className="hero-fade-up hero-fade-up-delay-1 mb-3 max-w-xl font-display text-[clamp(1.85rem,4vw,3.35rem)] font-black uppercase tracking-[0.06em] text-white sm:mb-4">
+              The Fayette Flyer
+            </p>
+
+            <h1 className="hero-fade-up hero-fade-up-delay-2 max-w-[10ch] font-serif text-[clamp(2.75rem,5.1vw,4.3rem)] font-semibold leading-[0.94] text-white drop-shadow-[0_2px_18px_rgba(12,14,34,0.3)] sm:max-w-[11ch]">
+              First Class Local News
+            </h1>
+
+            <p className="hero-fade-up hero-fade-up-delay-2 mt-4 max-w-xl text-base leading-7 text-white/[0.86] sm:mt-5 sm:max-w-lg sm:text-[1.05rem] sm:leading-7">
+              Twice a week, we round up the local decisions, openings, events, and
+              neighbor-to-neighbor stories shaping Peachtree City, Fayetteville,
+              Tyrone, Brooks, and Woolsey.
+            </p>
+
+            <div id="subscribe" className="hero-fade-up hero-fade-up-delay-3 mt-5 sm:mt-6">
+              <SubscribeForm variant="hero" theme="inverse" className="max-w-xl" />
+            </div>
+
+            <p className="hero-fade-up hero-fade-up-delay-3 mt-5 border-t border-white/[0.16] pt-3 text-xs uppercase tracking-[0.18em] text-white/[0.72] sm:mt-6 sm:pt-4 sm:text-sm">
+              Free twice-a-week delivery • No paywall • Peachtree City • Fayetteville •
+              Tyrone • Brooks • Woolsey
+            </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-slate">
-            <div className="flex items-center gap-2">
-              <CheckCircleIcon className="w-5 h-5 text-gold" />
-              <span>100% Free</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircleIcon className="w-5 h-5 text-gold" />
-              <span>Weekly Delivery</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircleIcon className="w-5 h-5 text-gold" />
-              <span>Locally Focused</span>
-            </div>
-          </div>
-          {/* Cities served for SEO */}
-          <p className="text-slate/70 text-sm mt-6">
-            Serving Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey
-          </p>
         </div>
       </section>
 
-      {/* Latest Issue Section */}
       {featuredIssue && (
         <section className="py-16 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,7 +106,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Recent Issues Section */}
       {latestIssues.length > 1 && (
         <section className="py-16 bg-paper">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -129,11 +128,10 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* About Section */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif font-bold text-2xl sm:text-3xl text-navy mb-6">
-            First Class Local News
+            Local News with Character
           </h2>
           <p className="text-slate text-lg mb-8 max-w-2xl mx-auto">
             The Fayette Flyer covers what matters most to our community. From local
@@ -146,14 +144,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA Section */}
       <section className="py-16 bg-paper">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-serif font-bold text-2xl sm:text-3xl text-navy mb-4">
             Join Your Neighbors
           </h2>
           <p className="text-slate text-lg mb-8">
-            Get the Fayette Flyer delivered to your inbox every week.
+            Get the Fayette Flyer delivered to your inbox twice a week.
           </p>
           <SubscribeForm variant="hero" />
         </div>

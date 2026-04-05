@@ -17,10 +17,10 @@ export function Footer() {
                 <Image
                   src="/Footer.JPEG"
                   alt="Fayette Flyer"
-                  width={200}
-                  height={80}
+                  width={750}
+                  height={300}
                   quality={75}
-                  className="h-20 w-auto"
+                  className="w-[200px] h-auto"
                 />
               </Link>
             </div>

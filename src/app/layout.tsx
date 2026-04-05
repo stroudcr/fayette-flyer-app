@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Inter, Source_Serif_4, Playfair_Display } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
@@ -17,6 +17,14 @@ const sourceSerif = Source_Serif_4({
   variable: "--font-source-serif",
   subsets: ["latin"],
   display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
 });
 
 export const viewport: Viewport = {
@@ -90,10 +98,8 @@ export const metadata: Metadata = {
         sizes: "180x180",
       },
     ],
-    // favicon.ico automatically served by Next.js from src/app/favicon.ico
   },
   manifest: "/manifest.json",
-  // Geo-targeting meta tags for local SEO
   other: {
     "geo.region": "US-GA",
     "geo.placename": "Fayette County, Georgia",
@@ -127,7 +133,7 @@ export default function RootLayout({
         </Script>
         <JsonLd data={organizationSchema} />
       </head>
-      <body className={`${inter.variable} ${sourceSerif.variable} antialiased`}>
+      <body className={`${inter.variable} ${sourceSerif.variable} ${playfairDisplay.variable} antialiased`}>
         <div className="min-h-screen flex flex-col">
           <Header />
           {children}

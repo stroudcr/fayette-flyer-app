@@ -1,5 +1,5 @@
 import "server-only";
-import { getPosts, getAllPosts, getPostBySlug } from "./client";
+import { getPosts, getAllPosts, getPostBySlug, hasBeehiivConfig } from "./client";
 import type { BeehiivPost, Issue } from "./types";
 import { cleanBeehiivContent } from "./content";
 
@@ -39,16 +39,25 @@ function transformPost(post: BeehiivPost): Issue {
 }
 
 export async function getLatestIssues(count: number = 6): Promise<Issue[]> {
+  if (!hasBeehiivConfig()) {
+    return [];
+  }
   const response = await getPosts({ limit: count });
   return response.data.map(transformPost);
 }
 
 export async function getAllIssues(): Promise<Issue[]> {
+  if (!hasBeehiivConfig()) {
+    return [];
+  }
   const posts = await getAllPosts();
   return posts.map(transformPost);
 }
 
 export async function getIssueBySlug(slug: string): Promise<Issue | null> {
+  if (!hasBeehiivConfig()) {
+    return null;
+  }
   const post = await getPostBySlug(slug);
   return post ? transformPost(post) : null;
 }
