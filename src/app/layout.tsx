@@ -61,8 +61,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${SITE_CONFIG.url}/og-default.jpg`,
-        width: 1584,
-        height: 672,
+        width: 1200,
+        height: 630,
         alt: "Fayette Flyer - First Class Local News for Fayette County, GA",
       },
     ],
