@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:beehiiv-content": "node --experimental-strip-types --test src/lib/beehiiv/content.test.ts"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",

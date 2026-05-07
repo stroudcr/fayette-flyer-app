@@ -1,5 +1,42 @@
 import * as cheerio from "cheerio";
 
+const ADVERTISER_LOGO_PATH = "/uploads/ad_network/advertiser/logo/";
+
+function styleHasDeclaration(style: string | undefined, property: string, value: string): boolean {
+  if (!style) {
+    return false;
+  }
+
+  return style
+    .split(";")
+    .some((declaration) => {
+      const [name, ...rest] = declaration.split(":");
+      const normalizedValue = rest
+        .join(":")
+        .replace(/\s*!important\s*$/i, "")
+        .trim()
+        .toLowerCase();
+
+      return name?.trim().toLowerCase() === property.toLowerCase() &&
+        normalizedValue === value.toLowerCase();
+    });
+}
+
+function setStyleDeclaration(style: string | undefined, property: string, value: string): string {
+  const declarations = (style || "")
+    .split(";")
+    .map((declaration) => declaration.trim())
+    .filter(Boolean)
+    .filter((declaration) => {
+      const [name] = declaration.split(":");
+      return name?.trim().toLowerCase() !== property.toLowerCase();
+    });
+
+  declarations.unshift(`${property}:${value}`);
+
+  return declarations.join(";");
+}
+
 /**
  * Cleans Beehiiv free_web_content HTML to remove the duplicate header
  * and strip inline styles that clash with the site's design system.
@@ -49,6 +86,28 @@ export function cleanBeehiivContent(html: string): string {
   // 4. Neutralize Beehiiv wrapper classes
   $(".bg-wt-background").removeClass("bg-wt-background");
   $(".text-wt-text-on-background").removeClass("text-wt-text-on-background");
+
+  // 5. Beehiiv's web advertiser logo block can arrive as a row flex layout,
+  // which offsets the label beside the logo. Only normalize the ad-network
+  // logo wrapper so regular linked images and in-body ad creatives are left alone.
+  $(`img[src*="${ADVERTISER_LOGO_PATH}"]`).each(function () {
+    const logo = $(this);
+    const link = logo.closest("a");
+    const flexWrapper = link
+      .parents()
+      .filter((_, element) => styleHasDeclaration($(element).attr("style"), "display", "flex"))
+      .first();
+
+    if (!link.length || !flexWrapper.length) {
+      return;
+    }
+
+    flexWrapper.attr(
+      "style",
+      setStyleDeclaration(flexWrapper.attr("style"), "display", "block")
+    );
+    link.attr("style", setStyleDeclaration(link.attr("style"), "display", "block"));
+  });
 
   // Remove empty class attributes left behind
   $("[class]").each(function () {
