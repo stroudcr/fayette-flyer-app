@@ -2,10 +2,28 @@
 
 import { useState, FormEvent } from "react";
 
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+  }
+}
+
 interface SubscribeFormProps {
   variant?: "hero" | "inline" | "card";
   theme?: "surface" | "inverse";
   className?: string;
+}
+
+function trackMetaLead(variant: SubscribeFormProps["variant"]) {
+  if (process.env.NODE_ENV !== "production") {
+    return;
+  }
+
+  window.fbq?.("track", "Lead", {
+    content_name: "newsletter_subscription",
+    content_category: "Newsletter",
+    form_variant: variant,
+  });
 }
 
 export function SubscribeForm({
@@ -48,6 +66,7 @@ export function SubscribeForm({
 
       setStatus("success");
       setMessage("Welcome to the Fayette Flyer!");
+      trackMetaLead(variant);
       setEmail("");
     } catch (error) {
       setStatus("error");

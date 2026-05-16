@@ -7,6 +7,11 @@ import { Header, Footer, JsonLd } from "@/components";
 import { generateOrganizationSchema } from "@/lib/seo/schemas";
 import { ALL_KEYWORDS, SITE_CONFIG } from "@/lib/seo/constants";
 
+const metaPixelId =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_META_PIXEL_ID
+    : undefined;
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -109,6 +114,40 @@ export const metadata: Metadata = {
   },
 };
 
+function MetaPixelScript({ pixelId }: { pixelId: string }) {
+  return (
+    <Script id="meta-pixel" strategy="afterInteractive">
+      {`
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', ${JSON.stringify(pixelId)});
+        fbq('track', 'PageView');
+      `}
+    </Script>
+  );
+}
+
+function MetaPixelNoScript({ pixelId }: { pixelId: string }) {
+  return (
+    <noscript>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        height="1"
+        width="1"
+        style={{ display: "none" }}
+        src={`https://www.facebook.com/tr?id=${encodeURIComponent(pixelId)}&ev=PageView&noscript=1`}
+        alt=""
+      />
+    </noscript>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -131,9 +170,11 @@ export default function RootLayout({
             gtag('config', 'G-ZYE5GCMYJF');
           `}
         </Script>
+        {metaPixelId ? <MetaPixelScript pixelId={metaPixelId} /> : null}
         <JsonLd data={organizationSchema} />
       </head>
       <body className={`${inter.variable} ${sourceSerif.variable} ${playfairDisplay.variable} antialiased`}>
+        {metaPixelId ? <MetaPixelNoScript pixelId={metaPixelId} /> : null}
         <div className="min-h-screen flex flex-col">
           <Header />
           {children}
