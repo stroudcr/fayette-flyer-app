@@ -1,34 +1,19 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-  }
-}
+import { trackNewsletterSignupLead } from "@/lib/meta-pixel";
 
 interface SubscribeFormProps {
   variant?: "hero" | "inline" | "card";
   theme?: "surface" | "inverse";
+  showHelperText?: boolean;
   className?: string;
-}
-
-function trackMetaLead(variant: SubscribeFormProps["variant"]) {
-  if (process.env.NODE_ENV !== "production") {
-    return;
-  }
-
-  window.fbq?.("track", "Lead", {
-    content_name: "newsletter_subscription",
-    content_category: "Newsletter",
-    form_variant: variant,
-  });
 }
 
 export function SubscribeForm({
   variant = "inline",
   theme = "surface",
+  showHelperText = true,
   className = "",
 }: SubscribeFormProps) {
   const [email, setEmail] = useState("");
@@ -64,9 +49,9 @@ export function SubscribeForm({
         throw new Error(data.error || "Something went wrong");
       }
 
+      trackNewsletterSignupLead(variant);
       setStatus("success");
-      setMessage("Welcome to the Fayette Flyer!");
-      trackMetaLead(variant);
+      setMessage(data.message || "Welcome to the Fayette Flyer!");
       setEmail("");
     } catch (error) {
       setStatus("error");
@@ -140,9 +125,11 @@ export function SubscribeForm({
             {message}
           </p>
         )}
-        <p className={`mt-3 text-sm ${isInverse ? "text-white/[0.72]" : "text-center text-slate/70"}`}>
-          Join thousands of Fayette County residents. Free, twice-a-week delivery.
-        </p>
+        {showHelperText && (
+          <p className={`mt-3 text-sm ${isInverse ? "text-white/[0.72]" : "text-center text-slate/70"}`}>
+            Join thousands of Fayette County residents. Free, twice-a-week delivery.
+          </p>
+        )}
       </form>
     );
   }

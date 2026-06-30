@@ -20,6 +20,16 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Meta Pixel
+
+To enable Meta Pixel tracking, set the public pixel ID in your local or Vercel environment:
+
+```bash
+NEXT_PUBLIC_META_PIXEL_ID=1234567890
+```
+
+When this value is present, the app loads the base Meta Pixel on every page and sends a standard `Lead` event after a newsletter signup succeeds.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -70,13 +70,17 @@ export default async function HomePage() {
             </h1>
 
             <p className="hero-fade-up hero-fade-up-delay-2 mt-4 max-w-xl text-base leading-7 text-white/[0.86] sm:mt-5 sm:max-w-lg sm:text-[1.05rem] sm:leading-7">
-              Twice a week, we round up the local decisions, openings, events, and
-              neighbor-to-neighbor stories shaping Peachtree City, Fayetteville,
-              Tyrone, Brooks, and Woolsey.
+              Twice a week, we cover the local decisions, events, and stories shaping
+              Peachtree City, Fayetteville, Tyrone, Brooks, and Woolsey.
             </p>
 
             <div id="subscribe" className="hero-fade-up hero-fade-up-delay-3 mt-5 sm:mt-6">
-              <SubscribeForm variant="hero" theme="inverse" className="max-w-xl" />
+              <SubscribeForm
+                variant="hero"
+                theme="inverse"
+                showHelperText={false}
+                className="max-w-xl"
+              />
             </div>
 
             <p className="hero-fade-up hero-fade-up-delay-3 mt-5 border-t border-white/[0.16] pt-3 text-xs uppercase tracking-[0.18em] text-white/[0.72] sm:mt-6 sm:pt-4 sm:text-sm">

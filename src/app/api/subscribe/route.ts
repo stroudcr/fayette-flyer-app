@@ -4,47 +4,8 @@ import { createSubscription } from "@/lib/beehiiv/client";
 // Simple email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Simple in-memory rate limiter (per serverless instance)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60_000; // 1 minute
-const RATE_LIMIT_MAX = 5; // 5 requests per minute per IP
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-
-  // Clean stale entries when map grows large
-  if (rateLimitMap.size > 1000) {
-    for (const [key, val] of rateLimitMap) {
-      if (now > val.resetTime) rateLimitMap.delete(key);
-    }
-  }
-
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return false;
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return true;
-  }
-
-  entry.count++;
-  return false;
-}
-
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    if (isRateLimited(ip)) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
-    }
-
     const body = await request.json();
     const { email, utm_source, utm_medium, utm_campaign } = body;
 

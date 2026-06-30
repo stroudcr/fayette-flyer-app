@@ -3,14 +3,9 @@ import { Inter, Source_Serif_4, Playfair_Display } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
-import { Header, Footer, JsonLd } from "@/components";
+import { Header, Footer, JsonLd, MetaPixel } from "@/components";
 import { generateOrganizationSchema } from "@/lib/seo/schemas";
 import { ALL_KEYWORDS, SITE_CONFIG } from "@/lib/seo/constants";
-
-const metaPixelId =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_META_PIXEL_ID
-    : undefined;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -114,46 +109,14 @@ export const metadata: Metadata = {
   },
 };
 
-function MetaPixelScript({ pixelId }: { pixelId: string }) {
-  return (
-    <Script id="meta-pixel" strategy="afterInteractive">
-      {`
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', ${JSON.stringify(pixelId)});
-        fbq('track', 'PageView');
-      `}
-    </Script>
-  );
-}
-
-function MetaPixelNoScript({ pixelId }: { pixelId: string }) {
-  return (
-    <noscript>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        height="1"
-        width="1"
-        style={{ display: "none" }}
-        src={`https://www.facebook.com/tr?id=${encodeURIComponent(pixelId)}&ev=PageView&noscript=1`}
-        alt=""
-      />
-    </noscript>
-  );
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const organizationSchema = generateOrganizationSchema();
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim();
+  const shouldRenderVercelAnalytics = process.env.VERCEL === "1";
 
   return (
     <html lang="en">
@@ -170,17 +133,16 @@ export default function RootLayout({
             gtag('config', 'G-ZYE5GCMYJF');
           `}
         </Script>
-        {metaPixelId ? <MetaPixelScript pixelId={metaPixelId} /> : null}
         <JsonLd data={organizationSchema} />
       </head>
       <body className={`${inter.variable} ${sourceSerif.variable} ${playfairDisplay.variable} antialiased`}>
-        {metaPixelId ? <MetaPixelNoScript pixelId={metaPixelId} /> : null}
+        <MetaPixel pixelId={metaPixelId} />
         <div className="min-h-screen flex flex-col">
           <Header />
           {children}
           <Footer />
         </div>
-        <Analytics />
+        {shouldRenderVercelAnalytics && <Analytics />}
       </body>
     </html>
   );
