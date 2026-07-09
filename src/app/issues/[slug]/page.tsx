@@ -4,7 +4,7 @@ import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import { IssueContent } from "./IssueContent";
 import { SubscribeForm, JsonLd, XTwitterIcon, FacebookIcon, EmailIcon } from "@/components";
-import { getIssueBySlug, getAdjacentIssues, getAllIssues } from "@/lib/beehiiv/posts";
+import { getIssueBySlug, getIssuePageData, getAllIssues } from "@/lib/beehiiv/posts";
 import { generateNewsArticleSchema, generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 
@@ -77,10 +77,7 @@ export async function generateStaticParams() {
 
 export default async function IssuePage({ params }: Props) {
   const { slug } = await params;
-  const [issue, adjacent] = await Promise.all([
-    getIssueBySlug(slug),
-    getAdjacentIssues(slug),
-  ]);
+  const { issue, adjacent } = await getIssuePageData(slug);
 
   if (!issue) {
     notFound();

@@ -1,5 +1,11 @@
 import "server-only";
-import { getPosts, getAllPosts, getPostBySlug, hasBeehiivConfig } from "./client";
+import {
+  getPosts,
+  getAllPosts,
+  getPostBySlug,
+  getPostById,
+  hasBeehiivConfig,
+} from "./client";
 import type { BeehiivPost, Issue } from "./types";
 import { cleanBeehiivContent } from "./content";
 
@@ -9,10 +15,10 @@ function transformPost(post: BeehiivPost): Issue {
     ? new Date(post.publish_date * 1000)
     : new Date();
 
-  // Extract excerpt from content or use subtitle
-  let excerpt = post.subtitle || "";
+  // Prefer summary fields for cards; only fall back to full content when it
+  // was already fetched for a detail page.
+  let excerpt = post.subtitle || post.meta_default_description || "";
   if (!excerpt && post.content?.free?.web) {
-    // Strip HTML and take first 200 chars
     const textContent = post.content.free.web
       .replace(/<[^>]+>/g, " ")
       .replace(/\s+/g, " ")
@@ -77,5 +83,39 @@ export async function getAdjacentIssues(
     prev: currentIndex > 0 ? allIssues[currentIndex - 1] : null,
     // Next = older (higher index)
     next: currentIndex < allIssues.length - 1 ? allIssues[currentIndex + 1] : null,
+  };
+}
+
+export async function getIssuePageData(
+  slug: string
+): Promise<{
+  issue: Issue | null;
+  adjacent: { prev: Issue | null; next: Issue | null };
+}> {
+  if (!hasBeehiivConfig()) {
+    return {
+      issue: null,
+      adjacent: { prev: null, next: null },
+    };
+  }
+
+  const posts = await getAllPosts();
+  const currentIndex = posts.findIndex((post) => post.slug === slug);
+
+  if (currentIndex === -1) {
+    return {
+      issue: null,
+      adjacent: { prev: null, next: null },
+    };
+  }
+
+  const fullPost = await getPostById(posts[currentIndex].id);
+
+  return {
+    issue: transformPost(fullPost),
+    adjacent: {
+      prev: currentIndex > 0 ? transformPost(posts[currentIndex - 1]) : null,
+      next: currentIndex < posts.length - 1 ? transformPost(posts[currentIndex + 1]) : null,
+    },
   };
 }

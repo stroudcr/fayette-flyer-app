@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:beehiiv-content": "node --experimental-strip-types --test src/lib/beehiiv/content.test.ts"
+    "test:beehiiv": "tsx --conditions react-server --test src/lib/beehiiv/*.test.ts",
+    "test:beehiiv-content": "tsx --conditions react-server --test src/lib/beehiiv/content.test.ts"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
@@ -16,7 +17,8 @@
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "sanitize-html": "^2.17.0"
+    "sanitize-html": "^2.17.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -27,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }

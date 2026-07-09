@@ -69,7 +69,7 @@ export async function getPosts(
     page = 1,
     limit = 10,
     status = "confirmed",
-    expand = ["free_web_content"],
+    expand = [],
   } = options;
 
   const params = new URLSearchParams({
@@ -91,11 +91,11 @@ export async function getPosts(
 export async function getPostBySlug(
   slug: string
 ): Promise<BeehiivPost | null> {
-  // Beehiiv doesn't have a direct slug lookup, so we fetch posts and filter
-  // For a small number of posts, this is acceptable
-  // For larger archives, consider caching or a different approach
+  // Beehiiv doesn't have a direct slug lookup, so find the lightweight
+  // summary first, then fetch full content for the single matching post.
   const allPosts = await getAllPosts();
-  return allPosts.find((post) => post.slug === slug) || null;
+  const post = allPosts.find((post) => post.slug === slug);
+  return post ? getPostById(post.id) : null;
 }
 
 export async function getPostById(id: string): Promise<BeehiivPost> {
