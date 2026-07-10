@@ -1,7 +1,9 @@
+import { SITE_URL } from "./site-url";
+
 export const SITE_CONFIG = {
   name: "Fayette Flyer",
   tagline: "First Class Local News",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com",
+  url: SITE_URL,
   email: "info@fayetteflyer.com",
   locale: "en_US",
 

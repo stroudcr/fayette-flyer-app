@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:beehiiv": "tsx --conditions react-server --test src/lib/beehiiv/*.test.ts",
-    "test:beehiiv-content": "tsx --conditions react-server --test src/lib/beehiiv/content.test.ts"
+    "test:beehiiv-content": "tsx --conditions react-server --test src/lib/beehiiv/content.test.ts",
+    "test:seo": "tsx --test src/lib/seo/*.test.ts"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",

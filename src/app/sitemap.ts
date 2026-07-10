@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllIssues } from "@/lib/beehiiv/posts";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com";
+import { SITE_URL } from "@/lib/seo/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages

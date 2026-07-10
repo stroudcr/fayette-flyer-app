@@ -1,6 +1,5 @@
 import { MetadataRoute } from "next";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com";
+import { SITE_URL } from "@/lib/seo/site-url";
 
 export default function robots(): MetadataRoute.Robots {
   return {

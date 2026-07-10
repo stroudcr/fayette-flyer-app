@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSubscription } from "@/lib/beehiiv/client";
+import { SITE_URL } from "@/lib/seo/site-url";
 
 // Simple email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
       utm_source: utm_source || "website",
       utm_medium: utm_medium || "subscribe_form",
       utm_campaign: utm_campaign || undefined,
-      referring_site: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com",
+      referring_site: SITE_URL,
     });
 
     return NextResponse.json({

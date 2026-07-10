@@ -1,8 +1,6 @@
 import { getAllIssues } from "@/lib/beehiiv/posts";
 import type { Issue } from "@/lib/beehiiv/types";
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.fayetteflyer.com";
+import { SITE_URL } from "@/lib/seo/site-url";
 
 export const revalidate = 300; // 5 minutes
 
