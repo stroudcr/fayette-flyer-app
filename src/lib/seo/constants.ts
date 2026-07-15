@@ -33,7 +33,7 @@ export const SITE_CONFIG = {
   },
 
   // Default images
-  defaultOgImage: "https://www.fayetteflyer.com/og-default.jpg",
+  defaultOgImage: `${SITE_URL}/og-fayette-flyer-v2.jpg`,
   logo: "https://www.fayetteflyer.com/FF_Logo.JPG",
   logoWidth: 600,
   logoHeight: 60,

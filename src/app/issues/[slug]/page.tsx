@@ -50,13 +50,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       tags: ["Fayette County", "Georgia", "local news", "Peachtree City", "Fayetteville"],
       images: issue.thumbnailUrl
         ? [{ url: issue.thumbnailUrl, width: 1200, height: 630 }]
-        : [{ url: `${SITE_CONFIG.url}/og-default.jpg`, width: 1200, height: 630 }],
+        : [{ url: SITE_CONFIG.defaultOgImage, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: issue.title,
       description,
-      images: [issue.thumbnailUrl || `${SITE_CONFIG.url}/og-default.jpg`],
+      images: [issue.thumbnailUrl || SITE_CONFIG.defaultOgImage],
     },
     alternates: {
       canonical: articleUrl,
