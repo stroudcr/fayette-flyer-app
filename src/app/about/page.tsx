@@ -42,6 +42,11 @@ export default function AboutPage() {
               community events, and high school sports. We cover the stories that
               bring our neighbors together.
             </p>
+            <p>
+              Fayette Flyer is part of{" "}
+              <a href="https://www.welldiem.com">WellDiem Company</a>, a network
+              of locally focused publications serving communities across Georgia.
+            </p>
 
             <h2>Why We Started</h2>
             <p>
