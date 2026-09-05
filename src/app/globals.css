@@ -49,7 +49,7 @@ a:not(footer a):hover {
   text-decoration: underline;
 }
 
-/* Prose overrides for Beehiiv content */
+/* Typography for the site's editorial pages */
 .prose {
   --tw-prose-body: var(--slate);
   --tw-prose-headings: var(--navy);
@@ -75,23 +75,65 @@ a:not(footer a):hover {
   font-style: italic;
 }
 
-/* Beehiiv content overrides — defense-in-depth */
-.prose .rendered-post {
-  max-width: none !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+/* Issue bodies use Beehiiv's inline web formatting instead of prose margins.
+   Keep these defaults scoped so the site header and editorial pages retain
+   their own typography. Inline post styles take precedence over these defaults. */
+.issue-content {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #1d1d1f;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.prose [style*="font-family"] {
-  font-family: inherit !important;
+.issue-content :where(h1, h2, h3, h4, h5, h6) {
+  font-family: inherit;
 }
 
-.prose .bg-wt-background {
-  background: transparent !important;
+.issue-content :where(p, h1, h2, h3, h4, h5, h6, blockquote, figure) {
+  margin: 0;
 }
 
-.prose .text-wt-text-on-background {
-  color: inherit !important;
+.issue-content p:empty {
+  min-height: 1lh;
+}
+
+.issue-content a {
+  color: #2979bf;
+  text-decoration: underline;
+}
+
+.issue-content :where(div, p, a, figure, table, img, video, iframe) {
+  max-width: 100%;
+}
+
+.issue-content :where(img, video) {
+  height: auto;
+}
+
+.issue-content :where(ul, ol) {
+  padding-inline-start: 1.5em;
+}
+
+.issue-content ul {
+  list-style-type: disc;
+}
+
+.issue-content ol {
+  list-style-type: decimal;
+}
+
+/* These are the responsive classes emitted by Beehiiv's web API. */
+@media (max-width: 667px) {
+  .issue-content .mob-stack {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .issue-content .mob-w-full {
+    width: 100% !important;
+  }
 }
 
 /* Button styles */

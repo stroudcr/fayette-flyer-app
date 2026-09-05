@@ -1,6 +1,49 @@
 import * as cheerio from "cheerio";
+import sanitizeHtml from "sanitize-html";
 
 const ADVERTISER_LOGO_PATH = "/uploads/ad_network/advertiser/logo/";
+
+// Preserve the web renderer's visual declarations, without accepting scripts,
+// global stylesheets, positioning, or CSS that loads additional resources.
+const SAFE_STYLE_VALUE = /^(?!.*(?:url\s*\(|expression\s*\(|[\\{}<>])).+$/i;
+const CONTENT_STYLE_PROPERTIES = [
+  "color", "background-color", "text-align", "text-decoration",
+  "text-decoration-color", "text-decoration-line", "text-decoration-style",
+  "text-transform", "font-family", "font-size", "font-weight", "font-style",
+  "line-height", "letter-spacing", "white-space", "word-break", "overflow-wrap",
+  "padding", "padding-top", "padding-bottom", "padding-left", "padding-right",
+  "margin", "margin-top", "margin-bottom", "margin-left", "margin-right",
+  "width", "max-width", "height", "min-height", "max-height", "box-sizing",
+  "border", "border-top", "border-right", "border-bottom", "border-left",
+  "border-width", "border-style", "border-color", "border-radius",
+  "border-collapse", "border-spacing", "vertical-align", "table-layout",
+  "display", "flex-direction", "flex-wrap", "align-items", "justify-content",
+  "gap", "row-gap", "column-gap", "flex", "flex-grow", "flex-shrink", "flex-basis",
+];
+
+const CONTENT_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+    "img", "picture", "source", "video", "audio", "iframe",
+  ]),
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    img: ["src", "alt", "width", "height", "loading", "decoding", "srcset", "sizes"],
+    iframe: ["src", "width", "height", "frameborder", "allowfullscreen", "allow", "title"],
+    video: ["src", "controls", "width", "height", "poster"],
+    audio: ["src", "controls"],
+    source: ["src", "srcset", "type", "media", "sizes"],
+    a: ["href", "target", "rel", "title"],
+    td: ["colspan", "rowspan"],
+    th: ["colspan", "rowspan", "scope"],
+    ol: ["start", "reversed", "type"],
+    li: ["value"],
+    "*": ["class", "id", "style"],
+  },
+  allowedStyles: {
+    "*": Object.fromEntries(CONTENT_STYLE_PROPERTIES.map((property) => [property, [SAFE_STYLE_VALUE]])),
+  },
+  allowedIframeHostnames: ["www.youtube.com", "player.vimeo.com"],
+};
 
 function styleHasDeclaration(style: string | undefined, property: string, value: string): boolean {
   if (!style) {
@@ -38,8 +81,9 @@ function setStyleDeclaration(style: string | undefined, property: string, value:
 }
 
 /**
- * Cleans Beehiiv free_web_content HTML to remove the duplicate header
- * and strip inline styles that clash with the site's design system.
+ * Prepares and sanitizes Beehiiv free_web_content for the site's issue renderer.
+ * Keep the post's inline typography, spacing, and dividers; remove duplicate
+ * chrome and references to Beehiiv's separate website theme.
  */
 export function cleanBeehiivContent(html: string): string {
   const $ = cheerio.load(html, { xml: false });
@@ -55,12 +99,6 @@ export function cleanBeehiivContent(html: string): string {
   $("[style]").each(function () {
     const el = $(this);
     let style = el.attr("style") || "";
-
-    // Remove font-family declarations
-    style = style.replace(/font-family\s*:[^;"]+;?/gi, "");
-
-    // Remove max-width: 672px (Beehiiv's content constraint)
-    style = style.replace(/max-width\s*:\s*672px\s*;?/gi, "");
 
     // Remove Beehiiv CSS custom property declarations (--bh-*, --wt-*)
     style = style.replace(/--(?:bh|wt)-[a-zA-Z0-9-]+\s*:[^;"]+;?/gi, "");
@@ -102,6 +140,11 @@ export function cleanBeehiivContent(html: string): string {
       return;
     }
 
+    // Newer web renders already stack the sponsor with a deliberate gap.
+    if (styleHasDeclaration(flexWrapper.attr("style"), "flex-direction", "column")) {
+      return;
+    }
+
     flexWrapper.attr(
       "style",
       setStyleDeclaration(flexWrapper.attr("style"), "display", "block")
@@ -118,5 +161,5 @@ export function cleanBeehiivContent(html: string): string {
   });
 
   // cheerio.load wraps content in <html><body>, so extract body innerHTML
-  return $("body").html() || "";
+  return sanitizeHtml($("body").html() || "", CONTENT_SANITIZE_OPTIONS);
 }

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import sanitizeHtml from "sanitize-html";
 import { IssueContent } from "./IssueContent";
 import { SubscribeForm, JsonLd, XTwitterIcon, FacebookIcon, EmailIcon } from "@/components";
 import { getIssueBySlug, getIssuePageData, getAllIssues } from "@/lib/beehiiv/posts";
@@ -192,49 +191,10 @@ export default async function IssuePage({ params }: Props) {
         </section>
 
         {/* Issue Content */}
-        <article className="py-12 bg-paper">
+        <article className="py-12 bg-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             {issue.content ? (
-              <IssueContent content={sanitizeHtml(issue.content, {
-                allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "picture", "source", "video", "audio", "iframe"]),
-                allowedAttributes: {
-                  ...sanitizeHtml.defaults.allowedAttributes,
-                  img: ["src", "alt", "width", "height", "loading", "decoding", "srcset", "sizes"],
-                  iframe: ["src", "width", "height", "frameborder", "allowfullscreen", "allow", "title"],
-                  video: ["src", "controls", "width", "height", "poster"],
-                  audio: ["src", "controls"],
-                  source: ["src", "srcset", "type", "media", "sizes"],
-                  a: ["href", "target", "rel", "title"],
-                  "*": ["class", "id", "style"],
-                },
-                allowedStyles: {
-                  "*": {
-                    // Allow common safe styles but block font-family, max-width, and CSS custom properties
-                    "color": [/.*/],
-                    "background-color": [/.*/],
-                    "text-align": [/.*/],
-                    "padding": [/.*/],
-                    "padding-top": [/.*/],
-                    "padding-bottom": [/.*/],
-                    "padding-left": [/.*/],
-                    "padding-right": [/.*/],
-                    "margin": [/.*/],
-                    "margin-top": [/.*/],
-                    "margin-bottom": [/.*/],
-                    "margin-left": [/.*/],
-                    "margin-right": [/.*/],
-                    "width": [/.*/],
-                    "height": [/.*/],
-                    "border": [/.*/],
-                    "border-radius": [/.*/],
-                    "display": [/.*/],
-                    "line-height": [/.*/],
-                    "font-size": [/.*/],
-                    "font-weight": [/.*/],
-                  },
-                },
-                allowedIframeHostnames: ["www.youtube.com", "player.vimeo.com"],
-              })} />
+              <IssueContent content={issue.content} />
             ) : (
               <div className="text-center py-12">
                 <p className="text-slate">

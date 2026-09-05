@@ -76,3 +76,60 @@ test("leaves unrelated flex blocks unchanged", () => {
 
   assert.equal($("body > div").attr("style"), "display:flex;gap:12px");
 });
+
+test("preserves web typography, dashed dividers, and authored line breaks through sanitization", () => {
+  // Representative markup returned by free_web_content. border-top used to be
+  // stripped by the page's second sanitizer, leaving only an empty spacer.
+  const $ = loadCleaned(`
+    <div class="rendered-post" style="max-width:672px;margin:0 auto">
+      <div id="web-header"><h1>Duplicate title</h1></div>
+      <div id="content-blocks">
+        <div style="padding:12px 10px">
+          <p style="font-family:'Helvetica',Arial,sans-serif;font-size:18px;line-height:1.5;white-space:pre-wrap">First line<br><br>New paragraph</p>
+          <p></p>
+        </div>
+        <div style="font-size:0px;line-height:0px;padding:30px 0px">
+          <div style="margin:0 auto;border-top:5px dashed #EEEEEE;width:97%"></div>
+        </div>
+        <a href="https://example.com" style="text-decoration:underline #2979BF;color:#2979BF">Read more</a>
+      </div>
+    </div>
+  `);
+
+  assert.equal($("#web-header").length, 0);
+  assert.match($(".rendered-post").attr("style") || "", /max-width:672px/);
+  assert.match($("p").first().attr("style") || "", /font-family:'Helvetica',Arial,sans-serif/);
+  assert.match($("p").first().attr("style") || "", /white-space:pre-wrap/);
+  assert.equal($("p").first().html(), "First line<br><br>New paragraph");
+  assert.equal($("p:empty").length, 1);
+  assert.equal($('[style*="border-top:5px dashed #EEEEEE"]').length, 1);
+  assert.match($("a").attr("style") || "", /text-decoration:underline #2979BF/);
+});
+
+test("preserves modern sponsor columns and their spacing", () => {
+  const $ = loadCleaned(`
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <p>In partnership with</p>
+      <a href="https://example.com"><img src="https://media.beehiiv.com/uploads/ad_network/advertiser/logo/logo.png"></a>
+    </div>
+  `);
+  assert.equal($("body > div").attr("style"), "display:flex;flex-direction:column;align-items:center;gap:12px");
+});
+
+test("keeps newsletter markup safe while allowing visual styles", () => {
+  const $ = loadCleaned(`
+    <style>body { display:none }</style><script>alert(1)</script>
+    <p onclick="alert(1)" style="position:fixed;z-index:9999;color:red;--wt-color:blue">Safe text</p>
+    <a href="javascript:alert(1)">Unsafe link</a>
+    <img src="https://example.com/photo.png" onerror="alert(1)" style="background-color:url(https://example.com/tracker)">
+    <iframe src="https://example.com/embed"></iframe>
+    <iframe src="https://www.youtube.com/embed/test" title="Video"></iframe>
+  `);
+  assert.equal($("script, style").length, 0);
+  assert.equal($("[onclick], [onerror]").length, 0);
+  assert.equal($("p").attr("style"), "color:red");
+  assert.equal($("a").attr("href"), undefined);
+  assert.equal($("img").attr("style"), undefined);
+  assert.equal($("iframe").first().attr("src"), undefined);
+  assert.equal($("iframe").last().attr("src"), "https://www.youtube.com/embed/test");
+});

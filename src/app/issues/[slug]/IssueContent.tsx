@@ -1,5 +1,3 @@
-"use client";
-
 interface IssueContentProps {
   content: string;
 }
@@ -7,7 +5,7 @@ interface IssueContentProps {
 export function IssueContent({ content }: IssueContentProps) {
   return (
     <div
-      className="prose prose-lg prose-slate max-w-none"
+      className="issue-content"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
