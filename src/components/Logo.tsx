@@ -40,15 +40,18 @@ export function Logo({ variant = "full", className = "" }: LogoProps) {
   }
 
   return (
-    <Link href="/" className={`flex items-center gap-3 ${className}`}>
+    <Link
+      href="/"
+      className={`flex shrink-0 items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold ${className}`}
+    >
       <Image
-        src="/FF_Logo.JPG"
+        src="/fayette-flyer-navbar.webp"
         alt="Fayette Flyer"
-        width={1584}
-        height={672}
-        quality={75}
-        sizes="(max-width: 640px) 120px, (max-width: 768px) 140px, 160px"
-        className="h-12 w-auto sm:h-14 md:h-15 object-contain shrink-0"
+        width={720}
+        height={99}
+        preload
+        unoptimized
+        className="h-auto w-[200px] sm:w-[240px]"
       />
     </Link>
   );
