@@ -4,13 +4,21 @@ import Link from "next/link";
 import { JsonLd, SubscribeForm } from "@/components";
 import { getRecentIssueHtml } from "@/lib/beehiiv/posts";
 import {
-  displayDay,
   listingToEventSchema,
   todayIn,
   upcomingListings,
   type Listing,
 } from "@/lib/issue-listings";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import {
+  dateParts,
+  formatClock,
+  groupByDay,
+  relativeLabel,
+  townFrom,
+} from "@/lib/listing-format";
+import { BoardingPass } from "@/components/BoardingPass";
+import { PlaneIcon } from "@/components/PlaneIcon";
 
 export const revalidate = 300;
 
@@ -40,56 +48,6 @@ export const metadata: Metadata = {
   },
 };
 
-/* ---------- formatting helpers ---------- */
-
-function dateParts(isoDate: string) {
-  const date = new Date(`${isoDate}T12:00:00Z`);
-  const fmt = (options: Intl.DateTimeFormatOptions) =>
-    new Intl.DateTimeFormat("en-US", { ...options, timeZone: "UTC" }).format(date);
-  return {
-    weekday: fmt({ weekday: "long" }),
-    weekdayShort: fmt({ weekday: "short" }),
-    day: fmt({ day: "numeric" }),
-    month: fmt({ month: "long" }),
-    monthShort: fmt({ month: "short" }),
-  };
-}
-
-function addDays(isoDate: string, days: number): string {
-  const date = new Date(`${isoDate}T12:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-}
-
-function relativeLabel(isoDate: string, today: string): string | null {
-  if (isoDate === today) return "Today";
-  if (isoDate === addDays(today, 1)) return "Tomorrow";
-  return null;
-}
-
-function formatClock(time: string): { clock: string; meridiem: string } {
-  const [h, m] = time.split(":").map(Number);
-  const meridiem = h >= 12 ? "PM" : "AM";
-  const hour = h % 12 === 0 ? 12 : h % 12;
-  return { clock: `${hour}:${String(m).padStart(2, "0")}`, meridiem };
-}
-
-/** The town from an address like "Venue, 123 Street, Peachtree City, GA 30269". */
-function townFrom(whereText?: string): string | null {
-  if (!whereText) return null;
-  const matches = [...whereText.matchAll(/,\s*([^,]+?),\s*(?:GA|Georgia)\b/g)];
-  return matches.length ? matches[matches.length - 1][1].trim() : null;
-}
-
-function groupByDay(listings: Listing[], today: string): [string, Listing[]][] {
-  const groups = new Map<string, Listing[]>();
-  for (const listing of listings) {
-    const day = displayDay(listing, today);
-    groups.set(day, [...(groups.get(day) ?? []), listing]);
-  }
-  return [...groups.entries()];
-}
-
 /* ---------- small pieces ---------- */
 
 function PinIcon() {
@@ -97,14 +55,6 @@ function PinIcon() {
     <svg className="mt-[3px] h-4 w-4 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-6.75-5.4-6.75-11.25a6.75 6.75 0 1 1 13.5 0C18.75 15.6 12 21 12 21Z" />
       <circle cx="12" cy="9.75" r="2.25" />
-    </svg>
-  );
-}
-
-function PlaneIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M21.5 15.5v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0v5l-8 5v2l8-2.5V18l-2 1.5V21l3.5-1 3.5 1v-1.5l-2-1.5v-5l8 2.5Z" />
     </svg>
   );
 }
@@ -440,50 +390,7 @@ export default async function FayetteCountyEventsPage() {
         </section>
       )}
 
-      {/* Boarding pass signup */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="relative grid overflow-hidden rounded-2xl bg-navy text-white shadow-[0_30px_60px_-30px_rgba(21,22,57,0.6)] md:grid-cols-[1fr_17rem]">
-          <div className="p-7 sm:p-10">
-            <div className="flex items-center gap-3">
-              <PlaneIcon className="h-4 w-4 rotate-90 text-gold" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.26em] text-gold">Boarding pass</span>
-            </div>
-            <h2 className="mt-4 max-w-md font-serif text-3xl font-semibold leading-tight !text-white sm:text-4xl">
-              Your week in Fayette County, delivered.
-            </h2>
-            <p className="mt-3 max-w-md leading-7 text-white/75">
-              Local news, this calendar, and the meetings that matter, twice a week. No paywall, ever.
-            </p>
-            <div className="mt-6 max-w-lg">
-              <SubscribeForm variant="hero" theme="inverse" showHelperText={false} campaign="events_page" />
-            </div>
-          </div>
-
-          {/* Stub */}
-          <div className="relative border-t border-dashed border-white/25 p-7 font-mono text-xs uppercase tracking-[0.16em] md:border-l md:border-t-0 sm:p-10">
-            <span className="absolute -left-3 -top-3 hidden h-6 w-6 rounded-full bg-paper md:block" aria-hidden="true" />
-            <span className="absolute -bottom-3 -left-3 hidden h-6 w-6 rounded-full bg-paper md:block" aria-hidden="true" />
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-5 md:grid-cols-1">
-              <div>
-                <dt className="text-white/50">Passenger</dt>
-                <dd className="mt-1 text-sm text-white">You</dd>
-              </div>
-              <div>
-                <dt className="text-white/50">Destination</dt>
-                <dd className="mt-1 text-sm text-white">Fayette County</dd>
-              </div>
-              <div>
-                <dt className="text-white/50">Departs</dt>
-                <dd className="mt-1 text-sm text-white">Mon · Thu</dd>
-              </div>
-              <div>
-                <dt className="text-white/50">Class</dt>
-                <dd className="mt-1 text-sm text-gold">First · Free</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
+      <BoardingPass />
 
       {/* Event tips */}
       <section className="border-t border-navy/10 bg-white">
