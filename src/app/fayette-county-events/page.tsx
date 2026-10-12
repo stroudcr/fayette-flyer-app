@@ -126,7 +126,7 @@ function TimeColumn({ listing }: { listing: Listing }) {
         <span className="ml-1 text-xs font-semibold tracking-[0.12em] text-gold">{start.meridiem}</span>
       </div>
       {end && (
-        <div className="mt-1.5 text-xs uppercase tracking-[0.12em] text-slate/70">
+        <div className="mt-1.5 whitespace-nowrap text-xs uppercase tracking-[0.12em] text-slate/70">
           to {end.clock} {end.meridiem}
         </div>
       )}
@@ -136,17 +136,23 @@ function TimeColumn({ listing }: { listing: Listing }) {
 
 function EventCard({ listing, day }: { listing: Listing; day: string }) {
   const town = townFrom(listing.whereText);
+  // "October 12–15" or "Monday through Thursday" is a run of days;
+  // "October 13, and Thursday, October 15" is two separate dates.
+  const isContinuousRun = /\b(?:through|thru)\b|[a-z]\.?\s+\d{1,2}\s*[–—-]\s*\d{1,2}\b(?!:)/i.test(
+    listing.whenText
+  );
   const runsThrough =
     listing.endDate > day
       ? (() => {
           const p = dateParts(listing.endDate);
-          return `Runs through ${p.weekdayShort}, ${p.monthShort} ${p.day}`;
+          const date = `${p.weekdayShort}, ${p.monthShort} ${p.day}`;
+          return isContinuousRun ? `Runs through ${date}` : `Also ${date}`;
         })()
       : null;
 
   return (
     <li className="group relative overflow-hidden rounded-xl border border-navy/10 bg-white shadow-[0_1px_0_rgba(28,30,77,0.04)] transition hover:-translate-y-0.5 hover:border-navy/20 hover:shadow-[0_14px_30px_-18px_rgba(28,30,77,0.45)]">
-      <div className="grid sm:grid-cols-[7.5rem_1fr]">
+      <div className="grid sm:grid-cols-[8.5rem_1fr]">
         {/* Ticket stub with the time */}
         <div className="relative flex items-center gap-3 border-b border-dashed border-navy/15 bg-paper/70 px-5 py-4 sm:block sm:border-b-0 sm:border-r sm:px-5 sm:py-6">
           <TimeColumn listing={listing} />
