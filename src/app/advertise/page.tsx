@@ -126,7 +126,7 @@ export default function AdvertisePage() {
         <AdvertisingOption
           id="local-business-spotlight"
           title="Local Business Spotlight"
-          price="$450"
+          price="$360"
           lead="Our most popular option, and where we'd recommend most local businesses start."
           includes={["4 Fayette Flyer placements", "Custom-written or edited copy", "Photo or logo", "Direct link and call to action", "Category exclusivity", "Campaign performance recap"]}
           cta="Ask about the Spotlight"

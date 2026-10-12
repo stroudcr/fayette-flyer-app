@@ -26,7 +26,7 @@ export function Footer() {
             </div>
             <p className="text-gray-100 text-sm max-w-sm">
               Your trusted source for news and events in Fayette County, Georgia.
-              Delivered weekly to your inbox.
+              Delivered twice a week to your inbox.
             </p>
           </div>
 
