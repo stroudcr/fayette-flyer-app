@@ -144,30 +144,36 @@ export default async function HomePage() {
               First Class Local News
             </h1>
 
-            <p className="hero-fade-up hero-fade-up-delay-2 mt-6 max-w-lg text-base leading-7 text-white/[0.86] sm:text-[1.08rem] sm:leading-8">
-              The decisions, openings, games, and good news shaping Peachtree City,
-              Fayetteville, Tyrone, Brooks, and Woolsey.
+            <p className="hero-fade-up hero-fade-up-delay-2 mt-6 max-w-lg text-base leading-7 text-white/[0.88] sm:text-[1.1rem] sm:leading-8">
+              A free email newsletter with the news, events, and public meetings in
+              Peachtree City, Fayetteville, Tyrone, Brooks, and Woolsey. Delivered
+              every Monday and Thursday.
             </p>
 
             <div id="subscribe" className="hero-fade-up hero-fade-up-delay-3 mt-7 max-w-xl">
               <SubscribeForm variant="hero" theme="inverse" showHelperText={false} campaign="homepage_hero" />
             </div>
 
-            {/* Ticket strip */}
-            <dl className="hero-fade-up hero-fade-up-delay-3 mt-7 inline-grid grid-cols-3 overflow-hidden rounded-xl border border-white/15 bg-white/[0.05] backdrop-blur-sm">
-              <div className="px-4 py-3 sm:px-6">
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-white/55">Departs</dt>
-                <dd className="mt-1 font-mono text-sm font-semibold text-white sm:text-base">Mon · Thu</dd>
-              </div>
-              <div className="border-l border-dashed border-white/20 px-4 py-3 sm:px-6">
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-white/55">Fare</dt>
-                <dd className="mt-1 font-mono text-sm font-semibold text-gold sm:text-base">Free</dd>
-              </div>
-              <div className="border-l border-dashed border-white/20 px-4 py-3 sm:px-6">
-                <dt className="text-[10px] uppercase tracking-[0.22em] text-white/55">On board</dt>
-                <dd className="mt-1 font-mono text-sm font-semibold text-white sm:text-base">1,900+</dd>
-              </div>
-            </dl>
+            <ul className="hero-fade-up hero-fade-up-delay-3 mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
+              {["Always free", "Every Monday & Thursday", "Read by 1,900+ neighbors"].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-gold" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.8 3.8 6.8-6.8a1 1 0 0 1 1.4 0Z" clipRule="evenodd" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            {featured && (
+              <Link
+                href={`/issues/${featured.slug}`}
+                className="hero-fade-up hero-fade-up-delay-3 mt-7 inline-flex items-center gap-2 border-b border-white/30 pb-0.5 text-sm font-medium !text-white transition hover:border-gold hover:!no-underline"
+              >
+                Not sure yet? Read the latest edition
+                <span aria-hidden="true">→</span>
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -175,46 +181,16 @@ export default async function HomePage() {
       {/* ---------- Latest edition ---------- */}
       {featured && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="h-px w-8 bg-gold/70" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold">
-                  Latest edition · {editionDate(featured.publishDate, "long")}
-                </span>
-              </div>
-              <h2 className="mt-4 font-serif text-2xl italic text-slate sm:text-[1.7rem]">
-                {plainTitle(featured.title)}
-              </h2>
+          <div className="mb-8 flex items-center gap-3">
+            <div className="h-px w-8 bg-gold/70" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold">Latest edition</h2>
+          </div>
 
-              {featuredHeadlines.length > 1 ? (
-                <ol className="mt-8 border-t border-navy/10">
-                  {featuredHeadlines.map((headline, i) => (
-                    <li key={headline} className="flex gap-5 border-b border-navy/10 py-5 sm:gap-7 sm:py-6">
-                      <span className="pt-1 font-mono text-sm font-semibold tabular-nums text-gold">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <p className="font-serif text-xl font-semibold leading-snug text-navy sm:text-[1.65rem]">
-                        {headline}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                featured.excerpt && <p className="mt-6 text-lg leading-8 text-slate">{featured.excerpt}</p>
-              )}
-
-              <Link href={`/issues/${featured.slug}`} className="btn-primary mt-8 inline-flex items-center gap-2 !text-white">
-                Read the full edition
-                <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-
-            <Link
-              href={`/issues/${featured.slug}`}
-              className="group relative block self-start overflow-hidden rounded-2xl bg-navy shadow-[0_30px_60px_-34px_rgba(21,22,57,0.7)]"
-              aria-label={`Read the ${editionDate(featured.publishDate, "long")} edition`}
-            >
+          <Link
+            href={`/issues/${featured.slug}`}
+            className="group grid overflow-hidden rounded-2xl border border-navy/10 bg-white shadow-[0_1px_0_rgba(28,30,77,0.04)] transition hover:-translate-y-0.5 hover:border-navy/25 hover:!no-underline hover:shadow-[0_30px_60px_-34px_rgba(21,22,57,0.55)] md:grid-cols-[0.95fr_1.05fr]"
+          >
+            <div className="relative overflow-hidden bg-navy">
               {featured.thumbnailUrl ? (
                 <Image
                   src={featured.thumbnailUrl}
@@ -222,20 +198,47 @@ export default async function HomePage() {
                   width={900}
                   height={700}
                   quality={75}
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="aspect-[16/10] h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] md:aspect-auto"
                 />
               ) : (
-                <div className="flex aspect-[4/3] items-center justify-center">
+                <div className="flex aspect-[16/10] h-full items-center justify-center">
                   <PlaneIcon className="h-14 w-14 rotate-45 text-gold" />
                 </div>
               )}
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-[linear-gradient(0deg,rgba(21,22,57,0.92),rgba(21,22,57,0))] px-5 pb-4 pt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-white/85">
-                <span>{editionDate(featured.publishDate, "short")}</span>
-                <span className="text-gold">Now boarding</span>
-              </div>
-            </Link>
-          </div>
+            </div>
+
+            <div className="flex flex-col p-7 sm:p-10">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-slate/70">
+                {editionDate(featured.publishDate, "long")}
+              </p>
+
+              {featuredHeadlines.length > 1 ? (
+                <>
+                  <p className="mt-5 text-sm font-semibold uppercase tracking-[0.14em] text-navy/60">In this edition</p>
+                  <ul className="mt-3 space-y-3">
+                    {featuredHeadlines.map((headline) => (
+                      <li key={headline} className="flex gap-3">
+                        <span className="mt-[0.7rem] h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+                        <span className="font-serif text-xl font-semibold leading-snug text-navy sm:text-[1.4rem]">
+                          {headline}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <p className="mt-4 font-serif text-2xl font-semibold leading-snug text-navy">
+                  {featured.excerpt || plainTitle(featured.title)}
+                </p>
+              )}
+
+              <span className="btn-primary mt-8 inline-flex items-center gap-2 self-start !text-white group-hover:bg-navy-dark">
+                Read the full edition
+                <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+              </span>
+            </div>
+          </Link>
         </section>
       )}
 
