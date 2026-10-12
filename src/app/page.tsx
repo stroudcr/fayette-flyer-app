@@ -146,8 +146,7 @@ export default async function HomePage() {
 
             <p className="hero-fade-up hero-fade-up-delay-2 mt-6 max-w-lg text-base leading-7 text-white/[0.88] sm:text-[1.1rem] sm:leading-8">
               A free email newsletter with the news, events, and public meetings in
-              Peachtree City, Fayetteville, Tyrone, Brooks, and Woolsey. Delivered
-              every Monday and Thursday.
+              Peachtree City, Fayetteville, Tyrone, Brooks, and Woolsey.
             </p>
 
             <div id="subscribe" className="hero-fade-up hero-fade-up-delay-3 mt-7 max-w-xl">
@@ -155,7 +154,7 @@ export default async function HomePage() {
             </div>
 
             <ul className="hero-fade-up hero-fade-up-delay-3 mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
-              {["Always free", "Every Monday & Thursday", "Read by 1,900+ neighbors"].map((item) => (
+              {["Every Monday & Thursday", "No paywall, no spam", "Read by 1,900+ neighbors"].map((item) => (
                 <li key={item} className="flex items-center gap-2">
                   <svg className="h-4 w-4 text-gold" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.8 3.8 6.8-6.8a1 1 0 0 1 1.4 0Z" clipRule="evenodd" />
