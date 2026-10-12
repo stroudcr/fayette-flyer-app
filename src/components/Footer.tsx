@@ -47,6 +47,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/fayette-county-events" className="text-gray-100 hover:text-white text-sm transition-colors">
+                  Events
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="text-gray-100 hover:text-white text-sm transition-colors">
                   About
                 </Link>
