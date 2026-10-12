@@ -8,6 +8,8 @@ interface SubscribeFormProps {
   theme?: "surface" | "inverse";
   showHelperText?: boolean;
   className?: string;
+  /** Recorded on the subscriber in Beehiiv so signups can be traced to a page. */
+  campaign?: string;
 }
 
 export function SubscribeForm({
@@ -15,6 +17,7 @@ export function SubscribeForm({
   theme = "surface",
   showHelperText = true,
   className = "",
+  campaign,
 }: SubscribeFormProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -40,6 +43,7 @@ export function SubscribeForm({
           email,
           utm_source: "website",
           utm_medium: variant,
+          utm_campaign: campaign,
         }),
       });
 

@@ -52,6 +52,24 @@ export async function getLatestIssues(count: number = 6): Promise<Issue[]> {
   return response.data.map(transformPost);
 }
 
+/**
+ * Raw web HTML and publish dates for the most recent issues, used to build
+ * the events calendar. Kept separate from getLatestIssues so issue cards
+ * don't pay for full content.
+ */
+export async function getRecentIssueHtml(
+  count: number = 4
+): Promise<{ html: string | undefined; publishDate: Date }[]> {
+  if (!hasBeehiivConfig()) {
+    return [];
+  }
+  const response = await getPosts({ limit: count, expand: ["free_web_content"] });
+  return response.data.map((post) => ({
+    html: post.content?.free?.web,
+    publishDate: post.publish_date ? new Date(post.publish_date * 1000) : new Date(),
+  }));
+}
+
 export async function getAllIssues(): Promise<Issue[]> {
   if (!hasBeehiivConfig()) {
     return [];

@@ -15,6 +15,7 @@ export const SITE_CONFIG = {
     country: "US",
     latitude: 33.4487,
     longitude: -84.4547,
+    timeZone: "America/New_York",
   },
 
   // Cities served within Fayette County
