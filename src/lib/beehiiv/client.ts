@@ -28,6 +28,21 @@ function getPublicationId(): string {
   return publicationId;
 }
 
+const MAX_RETRIES = 3;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Honors Beehiiv's Retry-After header, otherwise backs off 1s, 2s, 4s. */
+function retryDelayMs(response: Response, attempt: number): number {
+  const retryAfter = Number(response.headers.get("retry-after"));
+  if (Number.isFinite(retryAfter) && retryAfter > 0) {
+    return Math.min(retryAfter, 10) * 1000;
+  }
+  return 1000 * 2 ** attempt;
+}
+
 async function beehiivFetch<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -36,15 +51,25 @@ async function beehiivFetch<T>(
   const publicationId = getPublicationId();
 
   const url = `${BEEHIIV_API_URL}/publications/${publicationId}${endpoint}`;
+  const isRead = !options.method || options.method.toUpperCase() === "GET";
 
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
+  let response: Response;
+  for (let attempt = 0; ; attempt++) {
+    response = await fetch(url, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+
+    // Beehiiv rate-limits bursts (429). Wait and retry reads a few times
+    // instead of failing the page, or the whole build.
+    const retryable = response.status === 429 || response.status >= 500;
+    if (!isRead || !retryable || attempt >= MAX_RETRIES) break;
+    await sleep(retryDelayMs(response, attempt));
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
