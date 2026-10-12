@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IssueContent } from "./IssueContent";
 import { SubscribeForm, JsonLd, XTwitterIcon, FacebookIcon, EmailIcon } from "@/components";
-import { getIssueBySlug, getIssuePageData, getAllIssues } from "@/lib/beehiiv/posts";
+import { getIssueBySlug, getIssuePageData, getLatestIssues } from "@/lib/beehiiv/posts";
 import { generateNewsArticleSchema, generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 
@@ -63,9 +63,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// Only the newest issues are built at deploy time. Older issues are built
+// the first time someone opens them (dynamicParams above) and then cached,
+// so deploys stay fast and don't flood the Beehiiv API as the archive grows.
+const PREBUILT_ISSUES = 10;
+
 export async function generateStaticParams() {
   try {
-    const issues = await getAllIssues();
+    const issues = await getLatestIssues(PREBUILT_ISSUES);
     return issues.map((issue) => ({
       slug: issue.slug,
     }));
