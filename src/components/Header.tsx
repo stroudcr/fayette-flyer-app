@@ -8,6 +8,7 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "Archive", href: "/issues" },
   { label: "Events", href: "/fayette-county-events" },
+  { label: "Shop", href: "https://shop.fayetteflyer.com/" },
   { label: "About", href: "/about" },
   { label: "Advertise", href: "/advertise" },
   { label: "Contact", href: "/contact" },
