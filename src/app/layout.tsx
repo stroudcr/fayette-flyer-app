@@ -5,7 +5,13 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { Header, Footer, JsonLd, MetaPixel } from "@/components";
 import { generateOrganizationSchema } from "@/lib/seo/schemas";
-import { ALL_KEYWORDS, SITE_CONFIG } from "@/lib/seo/constants";
+import {
+  ALL_KEYWORDS,
+  DEFAULT_OG_DESCRIPTION,
+  DEFAULT_OG_MEDIA,
+  DEFAULT_OG_TITLE,
+  SITE_CONFIG,
+} from "@/lib/seo/constants";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -55,24 +61,16 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_CONFIG.url,
     siteName: SITE_CONFIG.name,
-    title: "Fayette Flyer | Fayette County GA News & Community Updates",
-    description:
-      "Your trusted source for Fayette County GA news. Local news, events, and community updates from Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey.",
-    images: [
-      {
-        url: SITE_CONFIG.defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: "Fayette Flyer - First Class Local News for Fayette County, GA",
-      },
-    ],
+    title: DEFAULT_OG_TITLE,
+    description: DEFAULT_OG_DESCRIPTION,
+    ...DEFAULT_OG_MEDIA,
   },
   twitter: {
     card: "summary_large_image",
     title: "Fayette Flyer | Fayette County GA News",
     description:
       "Your trusted source for Fayette County GA news. Local news from Peachtree City, Fayetteville, Tyrone & more.",
-    images: [SITE_CONFIG.defaultOgImage],
+    images: [SITE_CONFIG.defaultOgVideoPoster],
   },
   metadataBase: new URL(SITE_CONFIG.url),
   alternates: {

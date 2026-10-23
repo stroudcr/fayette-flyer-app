@@ -8,7 +8,7 @@ import { getLatestIssues, getRecentIssueHtml } from "@/lib/beehiiv/posts";
 import type { Issue } from "@/lib/beehiiv/types";
 import { displayDay, todayIn, upcomingListings, type Listing } from "@/lib/issue-listings";
 import { dateParts, formatClock, relativeLabel, townFrom } from "@/lib/listing-format";
-import { SITE_CONFIG } from "@/lib/seo/constants";
+import { DEFAULT_OG_DESCRIPTION, DEFAULT_OG_MEDIA, DEFAULT_OG_TITLE, SITE_CONFIG } from "@/lib/seo/constants";
 import { generateWebsiteSchema } from "@/lib/seo/schemas";
 
 export const revalidate = 300;
@@ -19,6 +19,17 @@ export const metadata: Metadata = {
     "Get free twice-a-week Fayette County GA news delivered to your inbox. Covering Peachtree City, Fayetteville, Tyrone, Brooks & Woolsey local news, events, and community updates.",
   alternates: {
     canonical: SITE_CONFIG.url,
+  },
+  // og:type video.other lets Discord (and Facebook, when eligible) play the
+  // preview video inline; the rest of the site keeps og:type website.
+  openGraph: {
+    type: "video.other",
+    locale: "en_US",
+    url: SITE_CONFIG.url,
+    siteName: SITE_CONFIG.name,
+    title: DEFAULT_OG_TITLE,
+    description: DEFAULT_OG_DESCRIPTION,
+    ...DEFAULT_OG_MEDIA,
   },
 };
 
