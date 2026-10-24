@@ -5,12 +5,9 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Archive", href: "/issues" },
   { label: "Events", href: "/fayette-county-events" },
   { label: "Shop", href: "https://shop.fayetteflyer.com/" },
   { label: "About", href: "/about" },
-  { label: "Advertise", href: "/advertise" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -36,10 +33,10 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/#subscribe"
+              href="/advertise"
               className="btn-primary text-sm inline-block"
             >
-              Subscribe
+              Advertise
             </Link>
           </nav>
 
@@ -79,11 +76,11 @@ export function Header() {
                 </Link>
               ))}
               <Link
-                href="/#subscribe"
+                href="/advertise"
                 className="btn-primary text-center mt-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Subscribe
+                Advertise
               </Link>
             </div>
           </nav>
