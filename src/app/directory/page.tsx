@@ -8,11 +8,9 @@ import {
   CATEGORIES,
   CATEGORY_GROUPS,
   DIRECTORY_PATH,
-  FEATURED_MAILTO,
   FREE_LISTING_MAILTO,
   GUIDE_NAME,
   PRICING,
-  allBusinesses,
   businessHref,
   capitalize,
   categoriesInGroup,
@@ -24,13 +22,14 @@ import {
   recentlyAdded,
   townCode,
 } from "@/lib/directory";
+import { getGuideBusinesses } from "@/lib/directory/data";
 import { guideMetadata } from "@/lib/directory/metadata";
 import { generateGuideSchema } from "@/lib/directory/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 
-// Refresh daily so the edition label (e.g. "Fall 2026") stays current.
-export const revalidate = 86400;
+// Paid listings change through the database; pages also refresh on demand when they do.
+export const revalidate = 300;
 
 export const metadata = guideMetadata({
   title: `${GUIDE_NAME} | Fayette County, GA Businesses | ${SITE_CONFIG.name}`,
@@ -62,14 +61,14 @@ function SectionEyebrow({ number, label, inverse = false }: { number: number; la
   );
 }
 
-export default function DirectoryHomePage() {
-  const businesses = allBusinesses();
+export default async function DirectoryHomePage() {
+  const businesses = await getGuideBusinesses();
   const counts = new Map<string, number>();
   for (const b of businesses) counts.set(b.category, (counts.get(b.category) ?? 0) + 1);
 
   const featured = businesses.filter((b) => b.tier === "featured").slice(0, 3);
   const perks = businesses.filter((b) => b.perk).slice(0, 4);
-  const recent = recentlyAdded(5);
+  const recent = recentlyAdded(businesses, 5);
   const popular = [...counts.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
@@ -344,12 +343,18 @@ export default function DirectoryHomePage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href={FEATURED_MAILTO}
+              <Link
+                href="/directory/join"
                 className="mt-7 flex min-h-12 items-center justify-center rounded-md bg-gold font-semibold !text-navy-dark transition hover:bg-[#bba36d] hover:!no-underline"
               >
                 Become a featured member
-              </a>
+              </Link>
+              <p className="mt-3 text-center text-sm text-white/75">
+                Already a member?{" "}
+                <Link href="/directory/manage" className="font-medium !text-white underline underline-offset-4">
+                  Sign in
+                </Link>
+              </p>
             </div>
           </div>
         </div>

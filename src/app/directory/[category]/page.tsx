@@ -24,12 +24,14 @@ import {
   streetLine,
   telHref,
 } from "@/lib/directory";
+import { getGuideBusinesses } from "@/lib/directory/data";
 import { guideMetadata } from "@/lib/directory/metadata";
 import { generateCategorySchema } from "@/lib/directory/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 
 export const dynamicParams = false;
+export const revalidate = 300;
 
 interface Props {
   params: Promise<{ category: string }>;
@@ -48,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${category.heading} in Peachtree City & Fayette County, GA | ${SITE_CONFIG.name}`,
     description: `Find ${category.heading.toLowerCase()} in Fayette County, GA: ${category.blurb}. Local listings in Peachtree City, Fayetteville, Tyrone, Brooks and Woolsey from the ${SITE_CONFIG.name} ${GUIDE_NAME}.`,
     path: categoryHref(category.slug),
-    index: isCategoryIndexable(category.slug),
+    index: isCategoryIndexable(await getGuideBusinesses(), category.slug),
   });
 }
 
@@ -62,7 +64,7 @@ export default async function CategoryPage({ params }: Props) {
   if (!category) notFound();
 
   const group = getGroup(category.group);
-  const businesses = businessesInCategory(category.slug);
+  const businesses = businessesInCategory(await getGuideBusinesses(), category.slug);
   const perkCount = businesses.filter((b) => b.perk).length;
   const updated = lastUpdated(businesses);
   const related = categoriesInGroup(category.group).filter((c) => c.slug !== category.slug);
@@ -98,7 +100,7 @@ export default async function CategoryPage({ params }: Props) {
     ...(category.faqs ?? []),
     {
       question: `How do I get my business listed?`,
-      answer: `Email ${SITE_CONFIG.email} with your business name, address, phone and website. A basic listing is free. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) get a full profile with photos, top placement, a Flyer Perk for readers and a spotlight in the newsletter.`,
+      answer: `A basic listing is free: email ${SITE_CONFIG.email} with your business name, address, phone and website. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement, a Flyer Perk for readers and a spotlight in the newsletter.`,
     },
   ];
 
@@ -191,8 +193,11 @@ export default async function CategoryPage({ params }: Props) {
                 <p className="mt-1.5 text-sm leading-[22px] text-slate">
                   Claim your free listing, or become a featured member for ${PRICING.monthly} a month.
                 </p>
-                <Link href={`${DIRECTORY_PATH}#get-listed`} className="mt-3 inline-block text-[15px] font-medium">
-                  Get listed <span aria-hidden="true">→</span>
+                <Link href="/directory/join" className="mt-3 inline-block text-[15px] font-medium">
+                  Become a featured member <span aria-hidden="true">→</span>
+                </Link>
+                <Link href={`${DIRECTORY_PATH}#get-listed`} className="mt-1 block text-sm text-slate/80">
+                  Compare free and featured
                 </Link>
               </div>
 

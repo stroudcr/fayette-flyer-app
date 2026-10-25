@@ -4,13 +4,13 @@ import { SITE_URL } from "@/lib/seo/site-url";
 import {
   CATEGORIES,
   DIRECTORY_PATH,
-  allBusinesses,
   businessHref,
   categoryHref,
   isBusinessIndexable,
   isCategoryIndexable,
   lastUpdated,
 } from "@/lib/directory";
+import { getGuideBusinesses } from "@/lib/directory/data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
@@ -61,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Local Business Guide: the guide home, plus only the categories and
   // businesses that are indexable (empty categories and bare listings stay out).
-  const guideBusinesses = allBusinesses();
+  const guideBusinesses = await getGuideBusinesses();
   const guidePages: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}${DIRECTORY_PATH}`,
@@ -69,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...CATEGORIES.filter((c) => isCategoryIndexable(c.slug)).map((c) => {
+    ...CATEGORIES.filter((c) => isCategoryIndexable(guideBusinesses, c.slug)).map((c) => {
       const updated = lastUpdated(guideBusinesses.filter((b) => b.category === c.slug));
       return {
         url: `${SITE_URL}${categoryHref(c.slug)}`,

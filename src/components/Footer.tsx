@@ -90,6 +90,11 @@ export function Footer() {
                   Terms of Service
                 </Link>
               </li>
+              <li>
+                <Link href="/directory/manage" className="text-gray-100 hover:text-white text-sm transition-colors">
+                  Business owner login
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

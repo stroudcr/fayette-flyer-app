@@ -42,20 +42,21 @@ export function sortBusinesses(list: Business[]): Business[] {
   });
 }
 
-export function allBusinesses(): Business[] {
+/** Static listings only. Pages should use getGuideBusinesses() from ./data, which adds paid ones. */
+export function staticBusinesses(): Business[] {
   return sortBusinesses(BUSINESSES);
 }
 
-export function businessesInCategory(categorySlug: string): Business[] {
-  return sortBusinesses(BUSINESSES.filter((b) => b.category === categorySlug));
+export function businessesInCategory(list: Business[], categorySlug: string): Business[] {
+  return sortBusinesses(list.filter((b) => b.category === categorySlug));
 }
 
-export function getBusiness(categorySlug: string, businessSlug: string): Business | undefined {
-  return BUSINESSES.find((b) => b.category === categorySlug && b.slug === businessSlug);
+export function getBusiness(list: Business[], categorySlug: string, businessSlug: string): Business | undefined {
+  return list.find((b) => b.category === categorySlug && b.slug === businessSlug);
 }
 
-export function recentlyAdded(count: number): Business[] {
-  return [...BUSINESSES].sort((a, b) => b.addedAt.localeCompare(a.addedAt)).slice(0, count);
+export function recentlyAdded(list: Business[], count: number): Business[] {
+  return [...list].sort((a, b) => b.addedAt.localeCompare(a.addedAt)).slice(0, count);
 }
 
 /* ---------- urls ---------- */
@@ -69,14 +70,14 @@ export function businessHref(business: Pick<Business, "category" | "slug">): str
 }
 
 export function absoluteUrl(path: string): string {
-  return `${SITE_CONFIG.url}${path}`;
+  return /^https?:\/\//.test(path) ? path : `${SITE_CONFIG.url}${path}`;
 }
 
 /* ---------- indexing ---------- */
 
 /** Empty categories stay out of Google until they have a listing. */
-export function isCategoryIndexable(categorySlug: string): boolean {
-  return BUSINESSES.some((b) => b.category === categorySlug);
+export function isCategoryIndexable(list: Business[], categorySlug: string): boolean {
+  return list.some((b) => b.category === categorySlug);
 }
 
 /**
