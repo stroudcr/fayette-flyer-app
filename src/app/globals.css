@@ -6,6 +6,8 @@
   --navy: #1c1e4d;
   --navy-dark: #151639;
   --gold: #aa935d;
+  /* Darker gold for small text on light backgrounds (passes WCAG AA contrast) */
+  --gold-ink: #7d6838;
   --slate: #374151;
   --paper: #fafaf9;
   --white: #ffffff;
@@ -21,6 +23,7 @@
   --color-navy: var(--navy);
   --color-navy-dark: var(--navy-dark);
   --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
   --color-slate: var(--slate);
   --color-paper: var(--paper);
   --font-sans: var(--font-inter);

@@ -1,6 +1,16 @@
 import { MetadataRoute } from "next";
 import { getAllIssues } from "@/lib/beehiiv/posts";
 import { SITE_URL } from "@/lib/seo/site-url";
+import {
+  CATEGORIES,
+  DIRECTORY_PATH,
+  allBusinesses,
+  businessHref,
+  categoryHref,
+  isBusinessIndexable,
+  isCategoryIndexable,
+  lastUpdated,
+} from "@/lib/directory";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
@@ -49,6 +59,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // Local Business Guide: the guide home, plus only the categories and
+  // businesses that are indexable (empty categories and bare listings stay out).
+  const guideBusinesses = allBusinesses();
+  const guidePages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}${DIRECTORY_PATH}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...CATEGORIES.filter((c) => isCategoryIndexable(c.slug)).map((c) => {
+      const updated = lastUpdated(guideBusinesses.filter((b) => b.category === c.slug));
+      return {
+        url: `${SITE_URL}${categoryHref(c.slug)}`,
+        lastModified: updated ? new Date(`${updated}T12:00:00Z`) : new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      };
+    }),
+    ...guideBusinesses.filter(isBusinessIndexable).map((b) => ({
+      url: `${SITE_URL}${businessHref(b)}`,
+      lastModified: new Date(`${b.verifiedAt ?? b.addedAt}T12:00:00Z`),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
+
   // Dynamic issue pages
   let issuePages: MetadataRoute.Sitemap = [];
 
@@ -66,5 +103,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return [...staticPages, ...issuePages];
+  return [...staticPages, ...guidePages, ...issuePages];
 }
