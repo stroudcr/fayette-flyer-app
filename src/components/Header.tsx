@@ -6,7 +6,7 @@ import { Logo } from "./Logo";
 
 const navItems = [
   { label: "Events", href: "/fayette-county-events" },
-  { label: "Local Guide", href: "/directory" },
+  { label: "Local Businesses", href: "/directory" },
   { label: "Shop", href: "https://shop.fayetteflyer.com/" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
