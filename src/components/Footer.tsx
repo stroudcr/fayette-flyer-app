@@ -15,12 +15,12 @@ export function Footer() {
             <div className="mb-3">
               <Link href="/">
                 <Image
-                  src="/Footer.JPEG"
-                  alt="Fayette Flyer"
-                  width={750}
-                  height={300}
+                  src="/footer-logo.png"
+                  alt="Fayette Flyer — First Class Local News"
+                  width={1216}
+                  height={254}
                   quality={75}
-                  className="w-[200px] h-auto"
+                  className="w-[280px] max-w-full h-auto"
                 />
               </Link>
             </div>
