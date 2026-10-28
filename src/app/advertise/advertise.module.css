@@ -280,25 +280,115 @@
   background: #e4d0a2;
   border-color: #e4d0a2;
 }
-.sponsorExample {
-  border-left: 2px solid var(--ad-gold-light);
-  padding-left: 22px;
-  margin-block: 28px;
+/* Presenting Partner example: the top of a real issue, set the way it reads
+   in the inbox (Helvetica, Beehiiv's dashed dividers), with the sponsor's
+   placements marked in Flyer gold. */
+.optionCopy > .issueExample {
+  margin-block: 34px 38px;
 }
-.sponsorExample > p {
-  margin-bottom: 8px;
+.issueCaption {
+  max-width: 36em;
+  margin-bottom: 20px;
+  color: #c9cadb;
   font-size: 14px;
+  line-height: 1.6;
+}
+.issueSheet {
+  max-width: 600px;
+  padding: 30px 34px 0;
+  border-radius: 3px;
+  background: white;
+  box-shadow: 0 2px 6px rgb(8 9 30 / 0.3), 0 24px 48px rgb(8 9 30 / 0.45);
+  color: #1d1d1f;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.issueSheet p + p {
+  margin-top: 0.9em;
+}
+.page .issueSheet a:not(.issueLogo, .issuePhoto) {
+  color: #2979bf;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.page .issueSheet .issueMeta a {
+  color: inherit;
+}
+.issueSheet img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.issueMeta {
+  color: #555;
+  font-size: 11.5px;
+  text-align: right;
+}
+.issueSheet .issueTitle {
+  margin-top: 10px;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+.issueRule {
+  height: 4px;
+  margin: 28px 0;
+  border: 0;
+  background: repeating-linear-gradient(90deg, #e6e6e6 0 10px, transparent 10px 16px);
+}
+.callout {
+  position: relative;
+  margin-inline: -16px;
+  padding: 28px 16px 18px;
+  border: 1.5px dashed var(--gold);
+  border-radius: 3px;
+}
+.logoCallout {
+  margin-top: 30px;
+}
+.calloutTag {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  transform: translateY(-50%);
+  padding: 3px 10px;
+  border-radius: 2px;
+  background: var(--navy);
   color: var(--ad-gold-light);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
 }
-.sponsorExample blockquote {
-  font-family: var(--font-source-serif), Georgia, serif;
-  font-size: 25px;
-  font-style: italic;
-  line-height: 1.5;
-  color: white;
+.issueLogo {
+  display: block;
+  width: 50%;
+  margin-inline: auto;
 }
-.sponsorExample strong {
-  font-weight: 400;
+.issueSheet .issueFade {
+  max-height: 3.1em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 15%, transparent 95%);
+  mask-image: linear-gradient(to bottom, #000 15%, transparent 95%);
+}
+.issueSheet .issueSection {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.issuePhoto {
+  display: block;
+  margin-block: 16px 18px;
+}
+/* The issue keeps going: the next section fades out on the page. */
+.issueNext {
+  padding-bottom: 26px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000 20%, transparent 85%);
 }
 .sectionList {
   margin-block: 24px;
@@ -456,6 +546,33 @@
   .featuredOption::before {
     left: 20px;
     right: 20px;
+  }
+  .optionCopy > .issueExample {
+    margin-block: 28px 32px;
+  }
+  .issueSheet {
+    padding: 22px 20px 0;
+    font-size: 14.5px;
+  }
+  .issueSheet .issueTitle {
+    font-size: 23px;
+  }
+  .issueRule {
+    margin-block: 24px;
+  }
+  .callout {
+    margin-inline: -10px;
+    padding: 26px 10px 14px;
+  }
+  .calloutTag {
+    left: 8px;
+    max-width: calc(100% - 16px);
+  }
+  .issueLogo {
+    width: 64%;
+  }
+  .issueSheet .issueSection {
+    font-size: 17px;
   }
   .contact {
     padding-bottom: 48px;

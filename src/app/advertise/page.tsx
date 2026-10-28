@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import styles from "./advertise.module.css";
+import { PresentingPartnerExample } from "./PresentingPartnerExample";
 
 const advertisingEmail = "advertise@fayetteflyer.com";
 
@@ -164,10 +165,7 @@ export default function AdvertisePage() {
             issue that month, putting your name in front of readers approximately
             eight times throughout the campaign.
           </p>
-          <div className={styles.sponsorExample}>
-            <p>Think:</p>
-            <blockquote><strong>“Today&apos;s Fayette Flyer is presented by [Your Business].”</strong></blockquote>
-          </div>
+          <PresentingPartnerExample />
           <p>
             Your partnership includes prominent branding, custom sponsor
             messaging, links to your business, category exclusivity, performance
