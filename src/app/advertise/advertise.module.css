@@ -390,6 +390,27 @@
   -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 85%);
   mask-image: linear-gradient(to bottom, #000 20%, transparent 85%);
 }
+/* Section Partner example: the Dog of the Week header carrying a partner's
+   logo, set between Beehiiv's dashed dividers on a slice of an issue. */
+.optionCopy > .sectionExample {
+  margin-block: 32px 36px;
+}
+.sectionSheet {
+  max-width: 600px;
+  padding: 2px 30px;
+  border: 1px solid var(--ad-rule);
+  border-radius: 3px;
+  background: white;
+  box-shadow: 0 1px 3px rgb(28 30 77 / 0.06), 0 22px 44px -14px rgb(28 30 77 / 0.24);
+}
+.sectionSheet img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sectionSheet .issueRule {
+  margin-block: 22px;
+}
 .sectionList {
   margin-block: 24px;
 }
@@ -573,6 +594,15 @@
   }
   .issueSheet .issueSection {
     font-size: 17px;
+  }
+  .optionCopy > .sectionExample {
+    margin-block: 26px 30px;
+  }
+  .sectionSheet {
+    padding-inline: 16px;
+  }
+  .sectionSheet .issueRule {
+    margin-block: 16px;
   }
   .contact {
     padding-bottom: 48px;

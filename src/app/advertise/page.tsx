@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import styles from "./advertise.module.css";
 import { PresentingPartnerExample } from "./PresentingPartnerExample";
+import { SectionPartnerExample } from "./SectionPartnerExample";
 
 const advertisingEmail = "advertise@fayetteflyer.com";
 
@@ -188,6 +189,7 @@ export default function AdvertisePage() {
             Your business receives a <strong>“Presented by”</strong> or <strong>“Brought to you by”</strong> placement
             at the beginning of the sponsored section throughout the month.
           </p>
+          <SectionPartnerExample />
           <div className={styles.sectionList}>
             <p>Potential sections include:</p>
             <ul>
