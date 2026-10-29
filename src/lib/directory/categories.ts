@@ -236,6 +236,16 @@ export const CATEGORIES: Category[] = [
     keywords: ["realtor", "realty", "homes for sale", "broker"],
   },
   {
+    slug: "property-management",
+    name: "Property Management",
+    heading: "Property Management Companies",
+    singular: "property management company",
+    group: "professional-services",
+    schemaType: "LocalBusiness",
+    blurb: "rental property management, tenant placement and maintenance coordination",
+    keywords: ["property manager", "rental management", "leasing", "tenant screening", "landlord"],
+  },
+  {
     slug: "insurance",
     name: "Insurance agents",
     heading: "Insurance Agents",
