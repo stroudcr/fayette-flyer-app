@@ -10,6 +10,25 @@ let schemaReady: Promise<void> | null = null;
  * once per server instance and a brand-new database sets itself up.
  */
 const SCHEMA = [
+  `create table if not exists guide_free_submissions (
+    id uuid primary key default gen_random_uuid(),
+    slug text not null,
+    claimed_slug text,
+    category text not null,
+    status text not null default 'pending' check (status in ('pending', 'live', 'rejected', 'hidden', 'superseded')),
+    owner_email text not null,
+    contact_name text not null,
+    contact_role text not null,
+    requester_hash text not null,
+    content jsonb not null,
+    admin_note text,
+    reviewed_by text,
+    created_at timestamptz not null default now(),
+    reviewed_at timestamptz
+  )`,
+  `create index if not exists guide_free_status_idx on guide_free_submissions (status)`,
+  `create index if not exists guide_free_recent_idx on guide_free_submissions (created_at, owner_email, requester_hash)`,
+  `create unique index if not exists guide_free_pending_idx on guide_free_submissions (lower(owner_email), slug) where status = 'pending'`,
   `create table if not exists guide_listings (
     id uuid primary key default gen_random_uuid(),
     slug text not null unique,

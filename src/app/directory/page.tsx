@@ -8,7 +8,7 @@ import {
   CATEGORIES,
   CATEGORY_GROUPS,
   DIRECTORY_PATH,
-  FREE_LISTING_MAILTO,
+  FREE_LISTING_HREF,
   GUIDE_NAME,
   PRICING,
   businessHref,
@@ -318,7 +318,7 @@ export default async function DirectoryHomePage() {
                   </li>
                 ))}
               </ul>
-              <a href={FREE_LISTING_MAILTO} className="btn-secondary mt-7 flex min-h-12 items-center justify-center">
+              <a href={FREE_LISTING_HREF} className="btn-secondary mt-7 flex min-h-12 items-center justify-center">
                 Claim your free listing
               </a>
             </div>

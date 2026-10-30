@@ -10,7 +10,7 @@ import {
   businessesInCategory,
   capitalize,
   categoryHref,
-  claimMailto,
+  claimHref,
   getBusiness,
   getCategory,
   isBusinessIndexable,
@@ -71,7 +71,7 @@ export default async function BusinessPage({ params }: Props) {
     ? { href: "/directory/manage", label: "Manage this listing" }
     : business.tier === "featured"
       ? { href: updateMailto(business.name), label: "Update this listing" }
-      : { href: claimMailto(business.name), label: "Claim this listing" };
+      : { href: claimHref(business.slug), label: "Claim this listing" };
   const others = businessesInCategory(businesses, category.slug)
     .filter((b) => b.slug !== business.slug)
     .slice(0, 3);

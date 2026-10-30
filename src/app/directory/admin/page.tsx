@@ -6,6 +6,8 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { isPublic, type ListingRow } from "@/lib/guide/content";
 import { hasDatabase } from "@/lib/guide/env";
 import { allListingsForAdmin } from "@/lib/guide/listings";
+import { freeSubmissions } from "@/lib/guide/free-listings";
+import { FreeSubmissions } from "./FreeSubmissions";
 import { getSession } from "@/lib/guide/session";
 import { TONE_CLASSES, describeStatus, formatDate } from "@/lib/guide/status";
 import { approveListing, hideListing, rejectListing, sendOwnerSignInLink } from "./actions";
@@ -110,7 +112,7 @@ export default async function AdminPage({ searchParams }: Props) {
     );
   }
 
-  const listings = await allListingsForAdmin();
+  const [listings, freeListings] = await Promise.all([allListingsForAdmin(), freeSubmissions()]);
   const pending = listings.filter((l) => l.status === "pending");
   const others = listings.filter((l) => l.status !== "pending");
 
@@ -119,7 +121,7 @@ export default async function AdminPage({ searchParams }: Props) {
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
         <div className="border-t-[3px] border-navy pt-6 [border-top-style:double]">
           <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-ink">Local Business Guide</span>
-          <h1 className="mt-2 font-serif text-[clamp(2.2rem,5vw,3.2rem)] font-semibold leading-tight text-navy">Featured listings</h1>
+          <h1 className="mt-2 font-serif text-[clamp(2.2rem,5vw,3.2rem)] font-semibold leading-tight text-navy">Review business listings</h1>
           <p className="mt-1 text-sm text-slate/80">
             Signed in as {session.email} ·{" "}
             <Link href="/directory/manage" className="font-medium">
@@ -134,9 +136,10 @@ export default async function AdminPage({ searchParams }: Props) {
           </p>
         )}
 
+        <FreeSubmissions listings={freeListings} />
         <section className="mt-10">
           <h2 className="font-serif text-3xl font-semibold text-navy">
-            Waiting for review <span className="font-mono text-xl text-slate/70">({pending.length})</span>
+            Featured listings to review <span className="font-mono text-xl text-slate/70">({pending.length})</span>
           </h2>
           {pending.length === 0 ? (
             <p className="mt-3 text-slate">Nothing to review right now.</p>

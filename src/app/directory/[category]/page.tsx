@@ -6,7 +6,7 @@ import { CategoryBrowser, type ListingCard } from "@/components/directory/Catego
 import {
   CATEGORIES,
   DIRECTORY_PATH,
-  FREE_LISTING_MAILTO,
+  FREE_LISTING_HREF,
   GUIDE_NAME,
   PRICING,
   businessHref,
@@ -14,7 +14,7 @@ import {
   capitalize,
   categoriesInGroup,
   categoryHref,
-  claimMailto,
+  claimHref,
   formatMonthYear,
   getCategory,
   getGroup,
@@ -83,7 +83,7 @@ export default async function CategoryPage({ params }: Props) {
     perkTitle: b.perk?.title,
     tags: b.tags ?? [],
     photo: b.photos?.[0],
-    claimHref: claimMailto(b.name),
+    claimHref: claimHref(b.slug),
   }));
 
   const byline =
@@ -100,7 +100,7 @@ export default async function CategoryPage({ params }: Props) {
     ...(category.faqs ?? []),
     {
       question: `How do I get my business listed?`,
-      answer: `A basic listing is free: email ${SITE_CONFIG.email} with your business name, address, phone and website. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement, a Flyer Perk for readers and a spotlight in the newsletter.`,
+      answer: `A basic listing is free: fill out the form at fayetteflyer.com/directory/submit with your business name, address, phone and website. We review submissions before they appear in the guide. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement, a Flyer Perk for readers and a spotlight in the newsletter.`,
     },
   ];
 
@@ -152,7 +152,7 @@ export default async function CategoryPage({ params }: Props) {
                 The {GUIDE_NAME} is brand new. If your Fayette County business belongs here, your basic listing is free. Know a great one? Tell us and we’ll reach out.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a href={FREE_LISTING_MAILTO} className="btn-primary inline-flex min-h-12 items-center !text-white">
+                <a href={FREE_LISTING_HREF} className="btn-primary inline-flex min-h-12 items-center !text-white">
                   List your business free
                 </a>
                 <a href={recommendMailto(category.heading)} className="btn-secondary inline-flex min-h-12 items-center">

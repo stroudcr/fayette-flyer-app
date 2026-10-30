@@ -86,7 +86,7 @@ export default async function JoinPage({ searchParams }: Props) {
           </div>
           <p className="mt-4 px-1 text-sm leading-6 text-slate/80">
             Just want a basic listing? It&apos;s free:{" "}
-            <Link href={`${DIRECTORY_PATH}#get-listed`} className="font-medium">
+            <Link href="/directory/submit" className="font-medium">
               see the free option
             </Link>
             . Already a member?{" "}

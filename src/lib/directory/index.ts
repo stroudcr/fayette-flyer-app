@@ -147,19 +147,17 @@ export function mailtoHref(subject: string, body?: string): string {
 
 /* ---------- calls to action ---------- */
 
-// Listings are handled by email for now. Swap these for a form or checkout
-// link when one exists.
 const LISTING_DETAILS = "Business name:\nCategory:\nAddress:\nPhone:\nWebsite:\n";
 
-export const FREE_LISTING_MAILTO = mailtoHref(`Free listing in the ${GUIDE_NAME}`, LISTING_DETAILS);
+export const FREE_LISTING_HREF = "/directory/submit";
 
 export const FEATURED_MAILTO = mailtoHref(
   `Featured membership in the ${GUIDE_NAME}`,
   `${LISTING_DETAILS}Monthly or yearly:\n`
 );
 
-export function claimMailto(businessName: string): string {
-  return mailtoHref(`Claim my listing: ${businessName}`, "Your name:\nYour role at the business:\nBest phone number:\n");
+export function claimHref(businessSlug: string): string {
+  return `${FREE_LISTING_HREF}?claim=${encodeURIComponent(businessSlug)}`;
 }
 
 export function updateMailto(businessName: string): string {

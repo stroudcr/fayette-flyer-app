@@ -142,7 +142,7 @@ function normalizeWebsite(raw: string): string | undefined | null {
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-function parseHours(form: FormData, errors: FieldErrors): WeeklyHours | undefined {
+export function parseHours(form: FormData, errors: FieldErrors): WeeklyHours | undefined {
   const hours: WeeklyHours = {};
   for (const day of DAY_ORDER) {
     const mode = text(form, `hours.${day}.mode`, 10);
@@ -180,8 +180,8 @@ function parsePhotos(form: FormData, errors: FieldErrors): BusinessPhoto[] | und
   }
 }
 
-/** Fields collected on the join form (before checkout). */
-export function parseJoinForm(form: FormData) {
+/** Basic business details shared by free submissions and featured signup. */
+export function parseBusinessForm(form: FormData) {
   const errors: FieldErrors = {};
   const name = text(form, "name", 80);
   const category = text(form, "category", 60);
@@ -190,7 +190,6 @@ export function parseJoinForm(form: FormData) {
   const suite = text(form, "suite", 40);
   const zip = text(form, "zip", 10);
   const email = normalizeEmail(text(form, "email", 254));
-  const plan = text(form, "plan", 10) as Plan;
   const phone = normalizePhone(text(form, "phone", 30));
   const website = normalizeWebsite(text(form, "website", 200));
 
@@ -200,7 +199,6 @@ export function parseJoinForm(form: FormData) {
   if (street.length < 3) errors.street = "Enter your street address.";
   if (!/^\d{5}$/.test(zip)) errors.zip = "Enter a 5-digit ZIP code.";
   if (!isEmail(email)) errors.email = "Enter an email you check. You'll use it to sign in.";
-  if (plan !== "monthly" && plan !== "yearly") errors.plan = "Pick monthly or yearly.";
   if (phone === null) errors.phone = "Enter a 10-digit phone number.";
   if (website === null) errors.website = "Enter a full web address, like example.com.";
 
@@ -211,7 +209,15 @@ export function parseJoinForm(form: FormData) {
     phone: phone ?? undefined,
     website: website ?? undefined,
   };
-  return { errors, content, category, email, plan };
+  return { errors, content, category, email };
+}
+
+/** Fields collected on the join form (before checkout). */
+export function parseJoinForm(form: FormData) {
+  const parsed = parseBusinessForm(form);
+  const plan = text(form, "plan", 10) as Plan;
+  if (plan !== "monthly" && plan !== "yearly") parsed.errors.plan = "Pick monthly or yearly.";
+  return { ...parsed, plan };
 }
 
 /** Every owner-editable field, from the manage form. */

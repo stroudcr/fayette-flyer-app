@@ -6,6 +6,7 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { sendEmail } from "@/lib/guide/email";
 import { publicUrl, refreshGuidePages, MANAGE_URL } from "@/lib/guide/fulfillment";
 import { getListing, logEvent, setStatus } from "@/lib/guide/listings";
+import { reviewFreeSubmission } from "@/lib/guide/free-listings";
 import { createLoginToken, getSession, SIGN_IN_LINK_MINUTES } from "@/lib/guide/session";
 import { cancelAndRefund } from "@/lib/guide/stripe";
 
@@ -104,3 +105,30 @@ export async function sendOwnerSignInLink(form: FormData) {
   });
   done(sent ? `Sign-in link sent to ${listing.owner_email}.` : `Email isn't working yet, so no link was sent.`);
 }
+
+async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden") {
+  const admin = await requireAdmin();
+  const reason = String(form.get("reason") ?? "").trim().slice(0, 300);
+  const listing = await reviewFreeSubmission(String(form.get("id") ?? ""), status, admin.email, reason);
+  if (!listing) done("This submission has already been reviewed or no longer exists.");
+  refreshGuidePages();
+  if (status !== "hidden") {
+    await sendEmail({
+      to: listing.owner_email,
+      subject: status === "live" ? `${listing.content.name} is live in the Local Business Guide` : `About your listing for ${listing.content.name}`,
+      paragraphs: status === "live" ? [
+        "Your free business listing has been approved and is now in the Fayette Flyer Local Business Guide.",
+        `${SITE_CONFIG.url}/directory/${listing.category}/${listing.slug}`,
+      ] : [
+        `Thanks for submitting ${listing.content.name}. We weren't able to approve this submission.`,
+        ...(reason ? [`Reason: ${reason}`] : []),
+        `Questions? Contact ${SITE_CONFIG.email}.`,
+      ],
+    });
+  }
+  done(status === "live" ? `${listing.content.name} is live.` : status === "hidden" ? `Approved submission for ${listing.content.name} removed. Any original directory entry remains.` : `Submission for ${listing.content.name} declined.`);
+}
+
+export async function approveFreeListing(form: FormData) { await reviewFree(form, "live"); }
+export async function rejectFreeListing(form: FormData) { await reviewFree(form, "rejected"); }
+export async function hideFreeListing(form: FormData) { await reviewFree(form, "hidden"); }
