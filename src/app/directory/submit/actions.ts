@@ -11,6 +11,7 @@ import { parseFreeForm } from "@/lib/guide/free-content";
 import { createFreeSubmission } from "@/lib/guide/free-listings";
 
 export interface FreeState {
+  attempt?: number;
   errors?: FieldErrors;
   values?: Record<string, string>;
   message?: string;
@@ -18,23 +19,24 @@ export interface FreeState {
 }
 
 export async function submitFreeListing(_previous: FreeState, form: FormData): Promise<FreeState> {
+  const respond = (state: FreeState): FreeState => ({ ...state, attempt: (_previous.attempt ?? 0) + 1 });
   const values = Object.fromEntries([...form.entries()].filter((entry): entry is [string, string] => typeof entry[1] === "string"));
-  if (form.get("companyFax")) return { values, message: "We couldn't submit this form. Please try again." };
+  if (form.get("companyFax")) return respond({ values, message: "We couldn't submit this form. Please try again." });
   const parsed = parseFreeForm(form);
-  if (Object.keys(parsed.errors).length) return { errors: parsed.errors, values };
+  if (Object.keys(parsed.errors).length) return respond({ errors: parsed.errors, values });
 
   try {
     const businesses = await getGuideBusinesses();
     const original = parsed.claim ? businesses.find((b) => b.slug === parsed.claim && b.tier === "free") : undefined;
-    if (parsed.claim && !original) return { values, message: "That listing is no longer available to claim. Please return to the directory and try again." };
+    if (parsed.claim && !original) return respond({ values, message: "That listing is no longer available to claim. Please return to the directory and try again." });
     // Claims retain their current category and URL until reviewed by staff.
-    if (original && parsed.category !== original.category) return { values, errors: { category: "Keep the listing's current category when claiming it." } };
+    if (original && parsed.category !== original.category) return respond({ values, errors: { category: "Keep the listing's current category when claiming it." } });
     const h = await headers();
     const ip = h.get("x-vercel-forwarded-for") ?? h.get("x-forwarded-for") ?? parsed.email;
     const requesterHash = createHash("sha256").update(ip.split(",")[0].trim()).digest("hex");
     const result = await createFreeSubmission({ ...parsed, requesterHash, existingSlugs: businesses.map((b) => b.slug) });
-    if (result.limited) return { values, message: "Too many submissions. Please try again in an hour." };
-    if (!result.listing) return { submitted: true }; // Existing pending claim; don't send duplicate notifications.
+    if (result.limited) return respond({ values, message: "Too many submissions. Please try again in an hour." });
+    if (!result.listing) return respond({ submitted: true }); // Existing pending claim; don't send duplicate notifications.
 
     const c = parsed.content;
     await emailAdmins(`Free listing ${original ? "claim" : "submission"} to review: ${c.name}`, [
@@ -46,9 +48,9 @@ export async function submitFreeListing(_previous: FreeState, form: FormData): P
       `${SITE_CONFIG.url}/directory/admin`,
     ]);
     revalidatePath("/directory/admin");
-    return { submitted: true };
+    return respond({ submitted: true });
   } catch (error) {
     console.error("[free listing] Submission failed:", error);
-    return { values, message: "We couldn't save your submission. Your details are still below. Please try again shortly." };
+    return respond({ values, message: "We couldn't save your submission. Your details are still below. Please try again shortly." });
   }
 }

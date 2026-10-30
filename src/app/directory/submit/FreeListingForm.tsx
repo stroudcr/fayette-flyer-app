@@ -30,7 +30,7 @@ export function FreeListingForm({ claim, defaults, towns, categoryGroups }: Prop
     </div>
   );
   return (
-    <form action={action} className="grid gap-7" noValidate aria-busy={pending}>
+    <form key={state.attempt ?? 0} action={action} className="grid gap-7" noValidate aria-busy={pending}>
       <input type="hidden" name="claim" value={claim} />
       <div className="hidden" aria-hidden="true"><label htmlFor="companyFax">Leave this empty</label><input id="companyFax" name="companyFax" tabIndex={-1} autoComplete="off" /></div>
       {state.message && <p ref={feedback} tabIndex={-1} role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-800">{state.message}</p>}
