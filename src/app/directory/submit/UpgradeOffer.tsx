@@ -30,7 +30,6 @@ export function UpgradeOffer({ preview, pricing }: { preview: UpgradePreview; pr
     `Listed first in ${category}, above free listings`,
     "Photos and a full description",
     "A Flyer Perk offer for readers",
-    "A spotlight in the Flyer newsletter",
     "Monthly report of views, calls and clicks",
     "Edit your listing yourself, anytime",
   ];

@@ -7,7 +7,7 @@ import { JoinForm } from "./JoinForm";
 
 export const metadata = guideMetadata({
   title: `Become a Featured Member | ${GUIDE_NAME} | ${SITE_CONFIG.name}`,
-  description: `Put your Fayette County business in front of Fayette Flyer readers: a full profile with photos, top placement in your category and a newsletter spotlight, for $${PRICING.monthly} a month.`,
+  description: `Make your Fayette County business stand out in the Fayette Flyer's ${GUIDE_NAME}: a full profile with photos, top placement in your category and a Flyer Perk for readers, for $${PRICING.monthly} a month.`,
   path: "/directory/join",
 });
 
@@ -15,7 +15,6 @@ const INCLUDED = [
   "A full profile with photos, hours and a description",
   "Top placement in your category",
   "A Flyer Perk offer shown to readers",
-  "A spotlight in the Flyer newsletter",
   "A monthly report of views, calls and clicks",
   "Edit your listing yourself, anytime",
 ];
@@ -49,7 +48,7 @@ export default async function JoinPage({ searchParams }: Props) {
             Become a featured member
           </h1>
           <p className="mt-4 max-w-[640px] font-serif text-[21px] italic leading-8 text-slate">
-            Put your business in front of the neighbors who read the Flyer every week.
+            Make your business stand out to neighbors browsing the Flyer&apos;s {GUIDE_NAME}.
           </p>
         </div>
       </section>

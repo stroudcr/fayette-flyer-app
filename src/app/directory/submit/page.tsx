@@ -40,7 +40,7 @@ export default async function SubmitPage({ searchParams }: { searchParams: Promi
           <h1 className="mt-3 font-serif text-[clamp(2.2rem,5vw,3.4rem)] font-semibold leading-tight text-navy">{business ? "Claim your listing" : "Get your business listed"}</h1>
           <p className="mt-3 max-w-xl text-[17px] leading-7 text-slate">{business ? `Check the details for ${business.name} and tell us who you are.` : "Help your Fayette County neighbors find you. Add your business details below."} We&apos;ll review your submission before it appears in the guide.</p>
           <p className="mt-4 max-w-xl text-[15px] leading-6 text-slate/90">
-            Want photos, top placement and a newsletter spotlight?{" "}
+            Want photos, a full description and top placement in your category?{" "}
             <Link href={`${JOIN_PATH}?plan=yearly`} className="font-medium">
               Become a featured member
             </Link>{" "}

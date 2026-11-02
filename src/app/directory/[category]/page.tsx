@@ -101,7 +101,7 @@ export default async function CategoryPage({ params }: Props) {
     ...(category.faqs ?? []),
     {
       question: `How do I get my business listed?`,
-      answer: `A basic listing is free: fill out the form at fayetteflyer.com/directory/submit with your business name, address, phone and website. We review submissions before they appear in the guide. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement, a Flyer Perk for readers and a spotlight in the newsletter.`,
+      answer: `A basic listing is free: fill out the form at fayetteflyer.com/directory/submit with your business name, address, phone and website. We review submissions before they appear in the guide. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement and a Flyer Perk for readers.`,
     },
   ];
 

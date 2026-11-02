@@ -8,7 +8,6 @@ const FEATURED_FEATURES = [
   "Full profile with photos and description",
   "Top placement in your category",
   "A Flyer Perk offer for readers",
-  "Spotlight in the Flyer newsletter",
   "Monthly report of views, calls and clicks",
 ];
 
@@ -23,7 +22,7 @@ export function GetListedSection() {
             Get your business in the {GUIDE_NAME}
           </h2>
           <p className="mx-auto mt-3.5 max-w-[560px] text-[17px] leading-7 text-slate">
-            Every Fayette County business can have a free listing. Featured members get a full profile, top placement and a spot in the newsletter.
+            Every Fayette County business can have a free listing. Featured members get a full profile with photos, top placement in their category and a Flyer Perk for readers.
           </p>
         </div>
 

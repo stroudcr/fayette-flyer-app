@@ -121,7 +121,7 @@ async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden"
         "Your free business listing has been approved and is now in the Fayette Flyer Local Business Guide.",
         `[See your listing](${SITE_CONFIG.url}/directory/${listing.category}/${listing.slug})`,
         // A second, later invitation to upgrade, now that the free listing is done and live.
-        `Want ${listing.content.name} to stand out? Featured members are listed first in ${(getCategory(listing.category)?.heading ?? "their category").toLowerCase()}, with photos, a full description, a Flyer Perk for readers and a spotlight in the Flyer newsletter. It's ${perDayLabel(PRICING.yearly)} ($${PRICING.yearly} a year, or $${PRICING.monthly} a month), and your details are already filled in.`,
+        `Want ${listing.content.name} to stand out? Featured members are listed first in ${(getCategory(listing.category)?.heading ?? "their category").toLowerCase()}, with photos, a full description and a Flyer Perk for readers. It's ${perDayLabel(PRICING.yearly)} ($${PRICING.yearly} a year, or $${PRICING.monthly} a month), and your details are already filled in.`,
         `[Upgrade to featured](${SITE_CONFIG.url}${upgradeHref({
           name: listing.content.name,
           category: listing.category,
