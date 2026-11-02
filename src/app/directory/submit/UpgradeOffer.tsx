@@ -106,9 +106,9 @@ export function UpgradeOffer({ preview, pricing }: { preview: UpgradePreview; pr
         </ul>
         <Link
           href={preview.href}
-          className="mt-6 flex min-h-12 items-center justify-center rounded-md bg-gold px-7 font-semibold !text-navy-dark transition hover:bg-[#bba36d] hover:!no-underline sm:inline-flex"
+          className="mt-6 flex min-h-12 items-center justify-center rounded-md bg-gold px-6 py-3 text-center font-semibold !text-navy-dark transition hover:bg-[#bba36d] hover:!no-underline sm:inline-flex sm:px-8"
         >
-          Upgrade to a featured listing
+          Upgrade to featured
         </Link>
         <p className="mt-3 text-sm leading-6 text-white/75">
           Your business details carry over, so you&apos;ll just add your email and choose a plan. If you upgrade, your featured listing takes the place of the free one.
