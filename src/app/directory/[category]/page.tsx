@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd, SubscribeForm } from "@/components";
 import { CategoryBrowser, type ListingCard } from "@/components/directory/CategoryBrowser";
+import { GetListedSection } from "@/components/directory/GetListedSection";
 import {
   CATEGORIES,
   DIRECTORY_PATH,
@@ -196,9 +197,9 @@ export default async function CategoryPage({ params }: Props) {
                 <Link href="/directory/join" className="mt-3 inline-block text-[15px] font-medium">
                   Become a featured member <span aria-hidden="true">→</span>
                 </Link>
-                <Link href={`${DIRECTORY_PATH}#get-listed`} className="mt-1 block text-sm text-slate/80">
+                <a href="#get-listed" className="mt-1 block text-sm text-slate/80">
                   Compare free and featured
-                </Link>
+                </a>
               </div>
 
               {related.length > 0 && (
@@ -217,6 +218,8 @@ export default async function CategoryPage({ params }: Props) {
           }
         />
       </div>
+
+      <GetListedSection />
     </main>
   );
 }
