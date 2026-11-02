@@ -11,6 +11,7 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   { slug: "golf-carts-auto", name: "Golf Carts & Auto" },
   { slug: "pets", name: "Pets" },
   { slug: "professional-services", name: "Professional Services" },
+  { slug: "creative-media", name: "Creative & Media" },
 ];
 
 export const CATEGORIES: Category[] = [
@@ -274,5 +275,37 @@ export const CATEGORIES: Category[] = [
     schemaType: "Attorney",
     blurb: "estate planning, family, real estate and business law",
     keywords: ["lawyer", "law firm", "legal"],
+  },
+
+  // Creative & Media
+  {
+    slug: "photographers",
+    name: "Photographers",
+    heading: "Photographers",
+    singular: "photographer",
+    group: "creative-media",
+    schemaType: "ProfessionalService",
+    blurb: "family, wedding, senior, newborn and headshot photography",
+    keywords: ["photography", "photo studio", "wedding photographer", "family photos", "senior pictures", "headshots", "portraits", "newborn photos"],
+  },
+  {
+    slug: "videographers",
+    name: "Videographers",
+    heading: "Videographers",
+    singular: "videographer",
+    group: "creative-media",
+    schemaType: "ProfessionalService",
+    blurb: "wedding films, event video, drone footage and business videos",
+    keywords: ["video production", "wedding video", "event video", "drone", "commercial video", "video editing"],
+  },
+  {
+    slug: "web-design",
+    name: "Web design",
+    heading: "Web Designers",
+    singular: "web designer",
+    group: "creative-media",
+    schemaType: "ProfessionalService",
+    blurb: "small business websites, redesigns, SEO and ongoing site updates",
+    keywords: ["website", "web designer", "web developer", "website design", "seo", "ecommerce", "hosting"],
   },
 ];
