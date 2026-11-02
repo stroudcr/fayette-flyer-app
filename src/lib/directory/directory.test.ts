@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { BUSINESSES } from "./businesses";
 import { CATEGORIES, CATEGORY_GROUPS } from "./categories";
 import { TAGS } from "./tags";
-import { DAY_ORDER, formatTime, guideEdition, sortBusinesses, telHref } from "./index";
+import { DAY_ORDER, PRICING, formatTime, guideEdition, perDayLabel, sortBusinesses, telHref, upgradeDetailsFrom, upgradeHref } from "./index";
 import type { Business } from "./types";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -82,4 +82,22 @@ test("formatting helpers", () => {
   assert.equal(telHref("1-770-555-0142"), "tel:+17705550142");
   assert.equal(guideEdition(new Date("2026-10-24T12:00:00Z")), "Fall 2026");
   assert.equal(guideEdition(new Date("2027-01-10T12:00:00Z")), "Winter 2027");
+});
+
+test("featured price is shown per day", () => {
+  assert.equal(perDayLabel(288), "about 79¢ a day");
+  assert.equal(perDayLabel(PRICING.monthly * 12), "about 95¢ a day");
+  assert.equal(perDayLabel(400), "about $1.10 a day");
+});
+
+test("upgrade link carries public business details to the featured signup, never email", () => {
+  const href = upgradeHref({ name: "Joe's Plumbing & Heating", category: "plumbers", street: "1 Main St", suite: "", city: "Senoia", zip: "30276", phone: "(770) 555-1234", website: "https://example.com" });
+  const url = new URL(href, "https://fayetteflyer.com");
+  assert.equal(url.pathname, "/directory/join");
+  assert.equal(url.searchParams.get("plan"), "yearly");
+  assert.equal(url.searchParams.get("from"), "free");
+  assert.equal(url.searchParams.has("suite"), false);
+  assert.equal(url.searchParams.has("email"), false);
+  const details = upgradeDetailsFrom({ ...Object.fromEntries(url.searchParams), email: "owner@example.com" });
+  assert.deepEqual(details, { name: "Joe's Plumbing & Heating", category: "plumbers", street: "1 Main St", city: "Senoia", zip: "30276", phone: "(770) 555-1234", website: "https://example.com" });
 });

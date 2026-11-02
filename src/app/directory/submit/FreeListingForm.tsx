@@ -5,14 +5,16 @@ import { useActionState, useEffect, useRef } from "react";
 import { FormField, inputClass } from "@/components/directory/FormField";
 import { DAY_ORDER, DAY_LABELS } from "@/lib/directory/format";
 import { submitFreeListing, type FreeState } from "./actions";
+import { UpgradeOffer, type UpgradePricing } from "./UpgradeOffer";
 
 interface Props {
   claim: string;
   defaults: Record<string, string>;
   categoryGroups: { name: string; options: { value: string; label: string }[] }[];
+  pricing: UpgradePricing;
 }
 
-export function FreeListingForm({ claim, defaults, categoryGroups }: Props) {
+export function FreeListingForm({ claim, defaults, categoryGroups, pricing }: Props) {
   const [state, action, pending] = useActionState<FreeState, FormData>(submitFreeListing, {});
   const v = { ...defaults, ...state.values };
   const e = state.errors ?? {};
@@ -22,10 +24,16 @@ export function FreeListingForm({ claim, defaults, categoryGroups }: Props) {
   }, [state]);
   const describe = (id: string) => ({ "aria-describedby": `${id}-help`, "aria-invalid": e[id] ? true : undefined });
   if (state.submitted) return (
-    <div role="status" className="py-5">
-      <h2 className="font-serif text-3xl font-semibold text-navy">Thanks! Your listing is in review.</h2>
-      <p className="mt-3 leading-7 text-slate">We&apos;ll check your business details and email you once we&apos;ve reviewed your submission. Your changes will appear after approval.</p>
-      <Link href="/directory" className="btn-primary mt-6 inline-flex min-h-12 items-center !text-white">Back to the guide</Link>
+    <div className="py-5">
+      <div role="status">
+        <h2 className="font-serif text-3xl font-semibold text-navy">Thanks! Your listing is in review.</h2>
+        <p className="mt-3 leading-7 text-slate">We&apos;ll check your business details and email you once we&apos;ve reviewed your submission. Your free listing is all set, so there&apos;s nothing else you need to do.</p>
+      </div>
+      {state.preview ? (
+        <UpgradeOffer preview={state.preview} pricing={pricing} />
+      ) : (
+        <Link href="/directory" className="btn-primary mt-6 inline-flex min-h-12 items-center !text-white">Back to the guide</Link>
+      )}
     </div>
   );
   return (

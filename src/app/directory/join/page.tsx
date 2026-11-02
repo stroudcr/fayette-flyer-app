@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CheckIcon } from "@/components/directory/icons";
-import { CATEGORY_GROUPS, DIRECTORY_PATH, GUIDE_NAME, PRICING, categoriesInGroup } from "@/lib/directory";
+import { CATEGORY_GROUPS, DIRECTORY_PATH, GUIDE_NAME, PRICING, categoriesInGroup, upgradeDetailsFrom } from "@/lib/directory";
 import { guideMetadata } from "@/lib/directory/metadata";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import { JoinForm } from "./JoinForm";
@@ -21,11 +21,15 @@ const INCLUDED = [
 ];
 
 interface Props {
-  searchParams: Promise<{ plan?: string; canceled?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function JoinPage({ searchParams }: Props) {
-  const { plan, canceled } = await searchParams;
+  const query = await searchParams;
+  const { plan, canceled, from } = query;
+  // Coming from a free listing: its public details are carried over so the owner only adds an email and plan.
+  const carriedOver = from === "free" ? upgradeDetailsFrom(query) : {};
+  const hasCarriedOver = Object.keys(carriedOver).length > 0;
   const categoryGroups = CATEGORY_GROUPS.map((group) => ({
     name: group.name,
     options: categoriesInGroup(group.slug).map((c) => ({ value: c.slug, label: c.heading })),
@@ -57,8 +61,14 @@ export default async function JoinPage({ searchParams }: Props) {
               Checkout was canceled and you weren&apos;t charged. Your details are below if you&apos;d like to try again.
             </p>
           )}
+          {hasCarriedOver && !canceled && (
+            <p className="mb-6 rounded-xl border border-gold/50 bg-white px-4 py-3 text-[15px] text-slate">
+              We&apos;ve filled in your business details from your free listing. Check them, add your email and choose a plan.
+            </p>
+          )}
           <JoinForm
             categoryGroups={categoryGroups}
+            initialValues={carriedOver}
             defaultPlan={plan === "yearly" ? "yearly" : "monthly"}
             pricing={{ monthly: PRICING.monthly, yearly: PRICING.yearly, savings: PRICING.yearlySavings }}
           />

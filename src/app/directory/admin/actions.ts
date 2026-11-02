@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import { PRICING, getCategory, perDayLabel, upgradeHref } from "@/lib/directory";
 import { sendEmail } from "@/lib/guide/email";
 import { publicUrl, refreshGuidePages, MANAGE_URL } from "@/lib/guide/fulfillment";
 import { getListing, logEvent, setStatus } from "@/lib/guide/listings";
@@ -118,7 +119,19 @@ async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden"
       subject: status === "live" ? `${listing.content.name} is live in the Local Business Guide` : `About your listing for ${listing.content.name}`,
       paragraphs: status === "live" ? [
         "Your free business listing has been approved and is now in the Fayette Flyer Local Business Guide.",
-        `${SITE_CONFIG.url}/directory/${listing.category}/${listing.slug}`,
+        `[See your listing](${SITE_CONFIG.url}/directory/${listing.category}/${listing.slug})`,
+        // A second, later invitation to upgrade, now that the free listing is done and live.
+        `Want ${listing.content.name} to stand out? Featured members are listed first in ${(getCategory(listing.category)?.heading ?? "their category").toLowerCase()}, with photos, a full description, a Flyer Perk for readers and a spotlight in the Flyer newsletter. It's ${perDayLabel(PRICING.yearly)} ($${PRICING.yearly} a year, or $${PRICING.monthly} a month), and your details are already filled in.`,
+        `[Upgrade to featured](${SITE_CONFIG.url}${upgradeHref({
+          name: listing.content.name,
+          category: listing.category,
+          street: listing.content.address.street,
+          suite: listing.content.address.suite,
+          city: listing.content.town,
+          zip: listing.content.address.zip,
+          phone: listing.content.phone,
+          website: listing.content.website,
+        })})`,
       ] : [
         `Thanks for submitting ${listing.content.name}. We weren't able to approve this submission.`,
         ...(reason ? [`Reason: ${reason}`] : []),

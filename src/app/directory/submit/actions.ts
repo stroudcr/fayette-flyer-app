@@ -4,11 +4,13 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { SITE_CONFIG } from "@/lib/seo/constants";
+import { getCategory, upgradeHref } from "@/lib/directory";
 import { getGuideBusinesses } from "@/lib/directory/data";
 import type { FieldErrors } from "@/lib/guide/content";
 import { emailAdmins } from "@/lib/guide/email";
 import { parseFreeForm } from "@/lib/guide/free-content";
 import { createFreeSubmission } from "@/lib/guide/free-listings";
+import type { UpgradePreview } from "./UpgradeOffer";
 
 export interface FreeState {
   attempt?: number;
@@ -16,6 +18,29 @@ export interface FreeState {
   values?: Record<string, string>;
   message?: string;
   submitted?: boolean;
+  /** The submitted business, for the featured upgrade offer on the thank-you screen. */
+  preview?: UpgradePreview;
+}
+
+function upgradePreview(parsed: ReturnType<typeof parseFreeForm>): UpgradePreview {
+  const c = parsed.content;
+  return {
+    name: c.name,
+    categoryHeading: getCategory(parsed.category)?.heading ?? "Local businesses",
+    city: c.town,
+    street: c.address.suite ? `${c.address.street}, ${c.address.suite}` : c.address.street,
+    phone: c.phone,
+    href: upgradeHref({
+      name: c.name,
+      category: parsed.category,
+      street: c.address.street,
+      suite: c.address.suite,
+      city: c.town,
+      zip: c.address.zip,
+      phone: c.phone,
+      website: c.website,
+    }),
+  };
 }
 
 export async function submitFreeListing(_previous: FreeState, form: FormData): Promise<FreeState> {
@@ -36,7 +61,7 @@ export async function submitFreeListing(_previous: FreeState, form: FormData): P
     const requesterHash = createHash("sha256").update(ip.split(",")[0].trim()).digest("hex");
     const result = await createFreeSubmission({ ...parsed, requesterHash, existingSlugs: businesses.map((b) => b.slug) });
     if (result.limited) return respond({ values, message: "Too many submissions. Please try again in an hour." });
-    if (!result.listing) return respond({ submitted: true }); // Existing pending claim; don't send duplicate notifications.
+    if (!result.listing) return respond({ submitted: true, preview: upgradePreview(parsed) }); // Existing pending claim; don't send duplicate notifications.
 
     const c = parsed.content;
     await emailAdmins(`Free listing ${original ? "claim" : "submission"} to review: ${c.name}`, [
@@ -48,7 +73,7 @@ export async function submitFreeListing(_previous: FreeState, form: FormData): P
       `${SITE_CONFIG.url}/directory/admin`,
     ]);
     revalidatePath("/directory/admin");
-    return respond({ submitted: true });
+    return respond({ submitted: true, preview: upgradePreview(parsed) });
   } catch (error) {
     console.error("[free listing] Submission failed:", error);
     return respond({ values, message: "We couldn't save your submission. Your details are still below. Please try again shortly." });

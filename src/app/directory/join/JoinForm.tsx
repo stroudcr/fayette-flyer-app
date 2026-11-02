@@ -11,13 +11,15 @@ interface Option {
 
 interface JoinFormProps {
   categoryGroups: { name: string; options: Option[] }[];
+  /** Business details carried over from a free listing. */
+  initialValues?: Record<string, string>;
   defaultPlan: "monthly" | "yearly";
   pricing: { monthly: number; yearly: number; savings: number };
 }
 
-export function JoinForm({ categoryGroups, defaultPlan, pricing }: JoinFormProps) {
+export function JoinForm({ categoryGroups, initialValues, defaultPlan, pricing }: JoinFormProps) {
   const [state, action, pending] = useActionState<JoinState, FormData>(startCheckout, {});
-  const v = state.values ?? {};
+  const v = state.values ?? initialValues ?? {};
   const e = state.errors ?? {};
   const plan = v.plan ?? defaultPlan;
 
