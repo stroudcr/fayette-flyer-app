@@ -4,7 +4,7 @@ import { freeBusiness, mergeFreeBusinesses, parseFreeForm, type FreeSubmission }
 import type { Business } from "@/lib/directory/types";
 
 const entries = {
-  name: "Test Plumbing", category: "plumbers", town: "Tyrone", street: "10 Main Street", zip: "30290",
+  name: "Test Plumbing", category: "plumbers", city: "Tyrone", street: "10 Main Street", zip: "30290",
   email: "Owner@Example.com ", contactName: "Test Owner", contactRole: "Owner", authorized: "yes",
   phone: "7705551234", website: "example.com", "hours.mon.mode": "open", "hours.mon.opens": "08:00", "hours.mon.closes": "17:00",
 };
@@ -21,8 +21,8 @@ test("free submissions validate contact, consent and business data without requi
   assert.equal(result.content.phone, "(770) 555-1234");
   assert.equal(result.content.website, "https://example.com");
   assert.deepEqual(result.content.hours, { mon: [{ opens: "08:00", closes: "17:00" }] });
-  const invalid = parseFreeForm(form({ authorized: "", contactName: "", contactRole: "", email: "bad", town: "Atlanta", category: "bad", phone: "123", "hours.mon.opens": "bad" }));
-  for (const key of ["authorized", "contactName", "contactRole", "email", "town", "category", "phone", "hours.mon"]) assert.ok(invalid.errors[key], key);
+  const invalid = parseFreeForm(form({ authorized: "", contactName: "", contactRole: "", email: "bad", city: "12345", category: "bad", phone: "123", "hours.mon.opens": "bad" }));
+  for (const key of ["authorized", "contactName", "contactRole", "email", "city", "category", "phone", "hours.mon"]) assert.ok(invalid.errors[key], key);
 });
 
 const submission = (status: FreeSubmission["status"]): FreeSubmission => ({

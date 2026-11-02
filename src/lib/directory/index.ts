@@ -98,8 +98,9 @@ const TOWN_CODES: Record<Town, string> = {
   Woolsey: "WLS",
 };
 
-export function townCode(town: Town): string {
-  return TOWN_CODES[town];
+/** Three-letter code for a town, e.g. "PTC". Cities outside the Flyer's list use their first three letters. */
+export function townCode(town: string): string {
+  return (TOWN_CODES as Record<string, string>)[town] ?? town.replace(/[^\p{L}]/gu, "").slice(0, 3).toUpperCase();
 }
 
 export function capitalize(text: string): string {

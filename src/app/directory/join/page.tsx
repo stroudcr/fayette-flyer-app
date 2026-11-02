@@ -59,7 +59,6 @@ export default async function JoinPage({ searchParams }: Props) {
           )}
           <JoinForm
             categoryGroups={categoryGroups}
-            towns={[...SITE_CONFIG.cities]}
             defaultPlan={plan === "yearly" ? "yearly" : "monthly"}
             pricing={{ monthly: PRICING.monthly, yearly: PRICING.yearly, savings: PRICING.yearlySavings }}
           />

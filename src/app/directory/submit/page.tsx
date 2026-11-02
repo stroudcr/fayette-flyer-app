@@ -19,7 +19,7 @@ export default async function SubmitPage({ searchParams }: { searchParams: Promi
   const business = claim ? (await getGuideBusinesses()).find((b) => b.slug === claim && b.tier === "free") : undefined;
   if (claim && !business) notFound();
   const defaults: Record<string, string> = business ? {
-    name: business.name, category: business.category, town: business.town, street: business.address.street,
+    name: business.name, category: business.category, city: business.town, street: business.address.street,
     suite: business.address.suite ?? "", zip: business.address.zip, phone: business.phone ?? "", website: business.website ?? "",
   } : { category: category ?? "" };
   for (const day of DAY_ORDER) {
@@ -41,7 +41,7 @@ export default async function SubmitPage({ searchParams }: { searchParams: Promi
           <p className="mt-3 max-w-xl text-[17px] leading-7 text-slate">{business ? `Check the details for ${business.name} and tell us who you are.` : "Help your Fayette County neighbors find you. Add your business details below."} We&apos;ll review your submission before it appears in the guide.</p>
         </div>
         <div className="rounded-[18px] border border-navy/15 bg-white p-5 sm:p-8">
-          <FreeListingForm claim={business?.slug ?? ""} defaults={defaults} towns={[...SITE_CONFIG.cities]} categoryGroups={CATEGORY_GROUPS.map((g) => ({ name: g.name, options: categoriesInGroup(g.slug).map((c) => ({ value: c.slug, label: c.heading })) }))} />
+          <FreeListingForm claim={business?.slug ?? ""} defaults={defaults} categoryGroups={CATEGORY_GROUPS.map((g) => ({ name: g.name, options: categoriesInGroup(g.slug).map((c) => ({ value: c.slug, label: c.heading })) }))} />
         </div>
       </div>
     </main>

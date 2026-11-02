@@ -61,7 +61,6 @@ export default async function EditListingPage({ params }: Props) {
           <EditListingForm
             listingId={listing.id}
             content={listing.content}
-            towns={[...SITE_CONFIG.cities]}
             tags={TAG_KEYS.map((key) => ({ key, label: TAGS[key] }))}
             maxPhotos={MAX_PHOTOS}
           />

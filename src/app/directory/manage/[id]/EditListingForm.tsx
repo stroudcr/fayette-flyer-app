@@ -13,12 +13,11 @@ type DayMode = "" | "open" | "closed";
 interface EditListingFormProps {
   listingId: string;
   content: ListingContent;
-  towns: string[];
   tags: { key: TagKey; label: string }[];
   maxPhotos: number;
 }
 
-export function EditListingForm({ listingId, content, towns, tags, maxPhotos }: EditListingFormProps) {
+export function EditListingForm({ listingId, content, tags, maxPhotos }: EditListingFormProps) {
   const [state, action, pending] = useActionState<EditState, FormData>(saveListing.bind(null, listingId), {});
   const e = state.errors ?? {};
   const describe = (id: string) => ({ "aria-describedby": `${id}-help`, "aria-invalid": e[id] ? true : undefined });
@@ -119,14 +118,8 @@ export function EditListingForm({ listingId, content, towns, tags, maxPhotos }: 
           </FormField>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="town" label="Town" error={e.town}>
-            <select id="town" name="town" defaultValue={content.town} className={inputClass} {...describe("town")}>
-              {towns.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+          <FormField id="city" label="City" error={e.city}>
+            <input id="city" name="city" defaultValue={content.town} required maxLength={40} autoComplete="address-level2" className={inputClass} {...describe("city")} />
           </FormField>
           <FormField id="zip" label="ZIP code" error={e.zip}>
             <input id="zip" name="zip" defaultValue={content.address.zip} inputMode="numeric" maxLength={5} className={inputClass} {...describe("zip")} />

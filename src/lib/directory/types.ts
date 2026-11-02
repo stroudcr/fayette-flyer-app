@@ -62,7 +62,8 @@ export interface Business {
   category: string;
   /** "featured" = paying member ($29/mo or $288/yr). */
   tier: "free" | "featured";
-  town: Town;
+  /** City the business is in. Usually one of `SITE_CONFIG.cities`, but owners can type any city. */
+  town: string;
   address: {
     street: string;
     suite?: string;

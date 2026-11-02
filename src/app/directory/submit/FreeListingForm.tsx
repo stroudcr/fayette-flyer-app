@@ -9,11 +9,10 @@ import { submitFreeListing, type FreeState } from "./actions";
 interface Props {
   claim: string;
   defaults: Record<string, string>;
-  towns: string[];
   categoryGroups: { name: string; options: { value: string; label: string }[] }[];
 }
 
-export function FreeListingForm({ claim, defaults, towns, categoryGroups }: Props) {
+export function FreeListingForm({ claim, defaults, categoryGroups }: Props) {
   const [state, action, pending] = useActionState<FreeState, FormData>(submitFreeListing, {});
   const v = { ...defaults, ...state.values };
   const e = state.errors ?? {};
@@ -65,17 +64,8 @@ export function FreeListingForm({ claim, defaults, towns, categoryGroups }: Prop
           </FormField>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="town" label="Town" error={e.town}>
-            <select id="town" name="town" defaultValue={v.town ?? ""} required className={inputClass} {...describe("town")}>
-              <option value="" disabled>
-                Choose a town
-              </option>
-              {towns.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+          <FormField id="city" label="City" error={e.city}>
+            <input id="city" name="city" defaultValue={v.city} required maxLength={40} autoComplete="address-level2" className={inputClass} {...describe("city")} />
           </FormField>
           <FormField id="zip" label="ZIP code" error={e.zip}>
             <input id="zip" name="zip" defaultValue={v.zip} required inputMode="numeric" maxLength={5} autoComplete="postal-code" className={inputClass} {...describe("zip")} />

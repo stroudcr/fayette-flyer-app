@@ -3,7 +3,7 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { CATEGORIES } from "@/lib/directory/categories";
 import { DAY_ORDER } from "@/lib/directory/format";
 import { TAG_KEYS } from "@/lib/directory/tags";
-import type { Business, BusinessPhoto, DayKey, FlyerPerk, TagKey, Town, WeeklyHours } from "@/lib/directory/types";
+import type { Business, BusinessPhoto, DayKey, FlyerPerk, TagKey, WeeklyHours } from "@/lib/directory/types";
 
 export type ListingStatus = "draft" | "pending" | "live" | "hidden" | "rejected" | "canceled";
 export type Plan = "monthly" | "yearly";
@@ -11,7 +11,8 @@ export type Plan = "monthly" | "yearly";
 /** What an owner controls. Stored as JSON on the listing row. */
 export interface ListingContent {
   name: string;
-  town: Town;
+  /** The city the owner typed on the form (stored as `town` for older listings). */
+  town: string;
   address: { street: string; suite?: string; city: string; state: "GA"; zip: string };
   phone?: string;
   website?: string;
@@ -140,6 +141,27 @@ function normalizeWebsite(raw: string): string | undefined | null {
   }
 }
 
+const CITY = /^\p{L}[\p{L} .'’-]*$/u;
+
+/**
+ * Tidies a typed-in city: collapses spaces, matches the Flyer's own towns
+ * regardless of case ("peachtree city" → "Peachtree City") and capitalizes
+ * entries typed in all lower or all upper case ("senoia" → "Senoia").
+ */
+export function normalizeCity(raw: string): string {
+  const city = raw.replace(/\s+/g, " ").trim();
+  const known = SITE_CONFIG.cities.find((c) => c.toLowerCase() === city.toLowerCase());
+  if (known) return known;
+  if (city === city.toLowerCase() || city === city.toUpperCase()) {
+    return city.toLowerCase().replace(/(^|[\s-])\p{L}/gu, (match) => match.toUpperCase());
+  }
+  return city;
+}
+
+function isCity(city: string): boolean {
+  return city.length >= 2 && CITY.test(city);
+}
+
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export function parseHours(form: FormData, errors: FieldErrors): WeeklyHours | undefined {
@@ -185,7 +207,7 @@ export function parseBusinessForm(form: FormData) {
   const errors: FieldErrors = {};
   const name = text(form, "name", 80);
   const category = text(form, "category", 60);
-  const town = text(form, "town", 40) as Town;
+  const town = normalizeCity(text(form, "city", 40));
   const street = text(form, "street", 120);
   const suite = text(form, "suite", 40);
   const zip = text(form, "zip", 10);
@@ -195,7 +217,7 @@ export function parseBusinessForm(form: FormData) {
 
   if (name.length < 2) errors.name = "Enter your business name.";
   if (!CATEGORIES.some((c) => c.slug === category)) errors.category = "Pick the category that fits best.";
-  if (!SITE_CONFIG.cities.includes(town)) errors.town = "Pick your town.";
+  if (!isCity(town)) errors.city = "Enter your city.";
   if (street.length < 3) errors.street = "Enter your street address.";
   if (!/^\d{5}$/.test(zip)) errors.zip = "Enter a 5-digit ZIP code.";
   if (!isEmail(email)) errors.email = "Enter an email you check. You'll use it to sign in.";
@@ -224,7 +246,7 @@ export function parseJoinForm(form: FormData) {
 export function parseListingForm(form: FormData, existing: ListingContent) {
   const errors: FieldErrors = {};
   const name = text(form, "name", 80);
-  const town = text(form, "town", 40) as Town;
+  const town = normalizeCity(text(form, "city", 40));
   const street = text(form, "street", 120);
   const suite = text(form, "suite", 40);
   const zip = text(form, "zip", 10);
@@ -245,7 +267,7 @@ export function parseListingForm(form: FormData, existing: ListingContent) {
   const perkCode = text(form, "perk.code", 20).toUpperCase();
 
   if (name.length < 2) errors.name = "Enter your business name.";
-  if (!SITE_CONFIG.cities.includes(town)) errors.town = "Pick your town.";
+  if (!isCity(town)) errors.city = "Enter your city.";
   if (street.length < 3) errors.street = "Enter your street address.";
   if (!/^\d{5}$/.test(zip)) errors.zip = "Enter a 5-digit ZIP code.";
   if (phone === null) errors.phone = "Enter a 10-digit phone number.";

@@ -11,12 +11,11 @@ interface Option {
 
 interface JoinFormProps {
   categoryGroups: { name: string; options: Option[] }[];
-  towns: string[];
   defaultPlan: "monthly" | "yearly";
   pricing: { monthly: number; yearly: number; savings: number };
 }
 
-export function JoinForm({ categoryGroups, towns, defaultPlan, pricing }: JoinFormProps) {
+export function JoinForm({ categoryGroups, defaultPlan, pricing }: JoinFormProps) {
   const [state, action, pending] = useActionState<JoinState, FormData>(startCheckout, {});
   const v = state.values ?? {};
   const e = state.errors ?? {};
@@ -67,17 +66,8 @@ export function JoinForm({ categoryGroups, towns, defaultPlan, pricing }: JoinFo
           </FormField>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="town" label="Town" error={e.town}>
-            <select id="town" name="town" defaultValue={v.town ?? ""} required className={inputClass} {...describe("town")}>
-              <option value="" disabled>
-                Choose a town
-              </option>
-              {towns.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+          <FormField id="city" label="City" error={e.city}>
+            <input id="city" name="city" defaultValue={v.city} required maxLength={40} autoComplete="address-level2" className={inputClass} {...describe("city")} />
           </FormField>
           <FormField id="zip" label="ZIP code" error={e.zip}>
             <input id="zip" name="zip" defaultValue={v.zip} required inputMode="numeric" maxLength={5} autoComplete="postal-code" className={inputClass} {...describe("zip")} />

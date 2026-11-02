@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isPublic, parseJoinForm, parseListingForm, slugify, toBusiness, type ListingContent, type ListingRow } from "./content";
+import { isPublic, normalizeCity, parseJoinForm, parseListingForm, slugify, toBusiness, type ListingContent, type ListingRow } from "./content";
 
 function form(entries: Record<string, string | string[]>): FormData {
   const data = new FormData();
@@ -28,7 +28,7 @@ test("join form validates and normalizes", () => {
     form({
       name: "Example Business",
       category: "plumbers",
-      town: "Tyrone",
+      city: "Tyrone",
       street: "1 Main St",
       zip: "30290",
       email: "Owner@Example.com ",
@@ -43,17 +43,37 @@ test("join form validates and normalizes", () => {
   assert.equal(ok.content.website, "https://example.com");
   assert.equal(ok.content.address.city, "Tyrone");
 
-  const bad = parseJoinForm(form({ name: "", category: "nope", town: "Atlanta", street: "", zip: "123", email: "x", plan: "weekly", phone: "123" }));
-  for (const key of ["name", "category", "town", "street", "zip", "email", "plan", "phone"]) {
+  const bad = parseJoinForm(form({ name: "", category: "nope", city: "", street: "", zip: "123", email: "x", plan: "weekly", phone: "123" }));
+  for (const key of ["name", "category", "city", "street", "zip", "email", "plan", "phone"]) {
     assert.ok(bad.errors[key], `expected an error for ${key}`);
   }
+});
+
+test("city is typed in, tidied and accepted for towns outside the Flyer's list", () => {
+  assert.equal(normalizeCity("  peachtree   city "), "Peachtree City");
+  assert.equal(normalizeCity("FAYETTEVILLE"), "Fayetteville");
+  assert.equal(normalizeCity("senoia"), "Senoia");
+  assert.equal(normalizeCity("NEWNAN"), "Newnan");
+  assert.equal(normalizeCity("McDonough"), "McDonough");
+
+  const entries = { name: "Example Business", category: "plumbers", street: "1 Main St", zip: "30276", email: "owner@example.com", plan: "monthly" };
+  const senoia = parseJoinForm(form({ ...entries, city: "senoia" }));
+  assert.deepEqual(senoia.errors, {});
+  assert.equal(senoia.content.town, "Senoia");
+  assert.equal(senoia.content.address.city, "Senoia");
+
+  for (const city of ["", "a", "30269", "<b>"]) assert.ok(parseJoinForm(form({ ...entries, city })).errors.city, `expected an error for "${city}"`);
+
+  const edited = parseListingForm(form({ name: "Example Business", city: "Sharpsburg", street: "1 Main St", zip: "30277" }), base);
+  assert.deepEqual(edited.errors, {});
+  assert.equal(edited.content.town, "Sharpsburg");
 });
 
 test("listing form parses hours, services, tags, perk and paragraphs", () => {
   const { errors, content } = parseListingForm(
     form({
       name: "Example Business",
-      town: "Tyrone",
+      city: "Tyrone",
       street: "1 Main St",
       zip: "30290",
       description: "First paragraph.\n\nSecond   paragraph\nwraps.",
@@ -81,7 +101,7 @@ test("listing form rejects bad hours and photos from other hosts", () => {
   const { errors, content } = parseListingForm(
     form({
       name: "Example Business",
-      town: "Tyrone",
+      city: "Tyrone",
       street: "1 Main St",
       zip: "30290",
       "hours.wed.mode": "open",
