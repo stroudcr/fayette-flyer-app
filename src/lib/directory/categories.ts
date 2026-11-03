@@ -118,6 +118,16 @@ export const CATEGORIES: Category[] = [
     blurb: "termites, mosquitoes, rodents and general pest control",
     keywords: ["exterminator", "termite", "mosquito"],
   },
+  {
+    slug: "home-builders",
+    name: "Home builders",
+    heading: "Home Builders",
+    singular: "home builder",
+    group: "home-services",
+    schemaType: "GeneralContractor",
+    blurb: "custom homes, new construction and building on your own lot",
+    keywords: ["custom home builder", "custom homes", "new construction", "new home", "build on my lot", "builder"],
+  },
 
   // Food & Drink
   {
