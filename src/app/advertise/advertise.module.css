@@ -137,11 +137,6 @@
   font-size: 13px;
   line-height: 1.5;
 }
-.stats strong small {
-  margin-right: 0.15em;
-  font-size: 0.45em;
-  letter-spacing: 0;
-}
 .options {
   background: white;
 }

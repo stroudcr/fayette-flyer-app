@@ -158,7 +158,7 @@ export default function AdvertisePage() {
       <div className={styles.statsBand}>
         <ul className={`${styles.container} ${styles.stats}`} aria-label="Fayette Flyer readership">
           <li><strong>2,000+</strong><span>local subscribers</span></li>
-          <li><strong><small>Nearly</small> 60%</strong><span>open rates</span></li>
+          <li><strong>60%+</strong><span>typical open rates</span></li>
           <li><strong>Two</strong><span>issues every week</span></li>
           <li><strong>100%</strong><span>focused on Fayette County</span></li>
         </ul>
