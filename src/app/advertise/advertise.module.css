@@ -137,6 +137,11 @@
   font-size: 13px;
   line-height: 1.5;
 }
+.stats strong small {
+  margin-right: 0.15em;
+  font-size: 0.45em;
+  letter-spacing: 0;
+}
 .options {
   background: white;
 }
@@ -279,6 +284,95 @@
 .page .darkOption .button:hover {
   background: #e4d0a2;
   border-color: #e4d0a2;
+}
+/* Presenting Partner packages: a full-width row under the title, highest
+   price first. They stay side by side on every screen size, because stacking
+   them top to bottom would flip the high-to-low reading order. */
+.tieredGrid {
+  grid-template-areas: "title title" "tiers tiers" "copy inclusions";
+}
+.tieredGrid::after {
+  content: none;
+}
+.tiers {
+  grid-area: tiers;
+  margin-block: 8px 30px;
+}
+.tierIntro {
+  color: #c9cadb;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.page .tierList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+.tier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 24px 24px;
+  border: 1px solid #ffffff30;
+  border-radius: 3px;
+}
+.recommendedTier {
+  border-color: var(--ad-gold-light);
+  background: #ffffff0d;
+}
+.tierTag {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  transform: translateY(-50%);
+  padding: 3px 10px;
+  border-radius: 2px;
+  background: var(--ad-gold-light);
+  color: var(--navy);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+.page .tierCount {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tierPrice {
+  margin-top: 12px;
+  color: var(--ad-gold-light);
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -1.6px;
+}
+.tierEach {
+  margin-top: 8px;
+  color: #c9cadb;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.page .tierDetails {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #ffffff30;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.tierDetails li + li {
+  margin-top: 6px;
+}
+.tierNote {
+  margin-top: 16px;
+  color: #c9cadb;
+  font-size: 14px;
+  line-height: 1.6;
 }
 /* Presenting Partner example: the top of a real issue, set the way it reads
    in the inbox (Helvetica, Beehiiv's dashed dividers), with the sponsor's
@@ -438,6 +532,64 @@
   background: var(--paper);
   border-color: var(--navy);
 }
+/* Local Business Guide: its own band below the newsletter options, on the
+   paper background, so its price never sits next to theirs. */
+.guide {
+  padding-block: 72px 80px;
+}
+.guideGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 64px;
+}
+.guideCopy > * + * {
+  margin-top: 20px;
+}
+.eyebrow {
+  color: #8a7441;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.guideCopy .eyebrow + h2 {
+  margin-top: 12px;
+}
+.guideCard {
+  padding: 34px 32px 32px;
+  border: 1px solid var(--ad-rule);
+  border-radius: 3px;
+  background: white;
+  box-shadow: 0 1px 3px rgb(28 30 77 / 0.06), 0 22px 44px -14px rgb(28 30 77 / 0.18);
+}
+.guideCard h3 {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.guidePrice {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--navy);
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -1.6px;
+}
+.guideAnnual {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.guideCard .inclusions {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ad-rule);
+}
 .contact {
   padding-block: 0 80px;
 }
@@ -482,7 +634,7 @@
   .optionTitle {
     font-size: 33px;
   }
-  .contactGrid {
+  .contactGrid, .guideGrid {
     gap: 40px;
   }
 }
@@ -609,6 +761,71 @@
   }
   .contactGrid {
     padding-top: 40px;
+  }
+  .tieredGrid {
+    grid-template-areas: "title" "tiers" "copy" "inclusions";
+  }
+  .tiers {
+    margin-block: 4px 16px;
+  }
+  .page .tierList {
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .tier {
+    padding: 22px 10px 14px;
+  }
+  .tierTag {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2px 7px;
+    font-size: 10.5px;
+  }
+  .page .tierCount {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .tierPrice {
+    margin-top: 8px;
+    font-size: 32px;
+    letter-spacing: -0.6px;
+  }
+  .tierEach {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .page .tierDetails {
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .guide {
+    padding-block: 48px;
+  }
+  .guideGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .guideCard {
+    padding: 28px 20px 24px;
+  }
+  .guidePrice {
+    font-size: 48px;
+  }
+  .guideCard .inclusions {
+    margin-top: 22px;
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tier {
+    padding-inline: 7px;
+  }
+  .tierPrice {
+    font-size: 28px;
   }
 }
 
