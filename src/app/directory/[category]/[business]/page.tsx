@@ -24,7 +24,9 @@ import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 
 // New paid listings appear without a redeploy: unknown slugs render on demand.
 export const dynamicParams = true;
-export const revalidate = 300;
+// No timer: listing changes refresh guide pages on demand (refreshGuidePages),
+// so crawler visits never wake the database.
+export const revalidate = false;
 
 interface Props {
   params: Promise<{ category: string; business: string }>;

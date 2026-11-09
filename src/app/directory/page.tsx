@@ -26,8 +26,10 @@ import { generateGuideSchema } from "@/lib/directory/schemas";
 import { SITE_CONFIG } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 
-// Paid listings change through the database; pages also refresh on demand when they do.
-export const revalidate = 300;
+// Listing changes refresh guide pages on demand (refreshGuidePages). This page
+// also rebuilds once a day so the seasonal edition label stays current. A short
+// timer here would wake the database every few minutes for crawler traffic.
+export const revalidate = 86400;
 
 export const metadata = guideMetadata({
   title: `${GUIDE_NAME} | Fayette County, GA Businesses | ${SITE_CONFIG.name}`,

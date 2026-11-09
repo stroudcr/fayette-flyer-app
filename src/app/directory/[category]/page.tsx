@@ -32,7 +32,9 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 
 export const dynamicParams = false;
-export const revalidate = 300;
+// No timer: listing changes refresh guide pages on demand (refreshGuidePages),
+// so crawler visits never wake the database.
+export const revalidate = false;
 
 interface Props {
   params: Promise<{ category: string }>;
