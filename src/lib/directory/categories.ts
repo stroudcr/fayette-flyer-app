@@ -11,6 +11,7 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   { slug: "golf-carts-auto", name: "Golf Carts & Auto" },
   { slug: "pets", name: "Pets" },
   { slug: "professional-services", name: "Professional Services" },
+  { slug: "education-classes", name: "Education & Classes" },
   { slug: "creative-media", name: "Creative & Media" },
   { slug: "shopping-gifts", name: "Shopping & Gifts" },
 ];
@@ -306,6 +307,28 @@ export const CATEGORIES: Category[] = [
     schemaType: "Attorney",
     blurb: "estate planning, family, real estate and business law",
     keywords: ["lawyer", "law firm", "legal"],
+  },
+
+  // Education & Classes
+  {
+    slug: "music-lessons",
+    name: "Music Lessons",
+    heading: "Music Lessons",
+    singular: "music instructor",
+    group: "education-classes",
+    schemaType: "LocalBusiness",
+    blurb: "music schools and instructors offering instrument, voice and music theory lessons for children and adults",
+    keywords: ["music school", "music teacher", "piano lessons", "guitar lessons", "voice lessons", "singing", "violin", "drums", "music instruction"],
+  },
+  {
+    slug: "art-classes",
+    name: "Art Classes",
+    heading: "Art Classes",
+    singular: "art instructor",
+    group: "education-classes",
+    schemaType: "LocalBusiness",
+    blurb: "art studios and instructors offering drawing, painting, pottery and other art classes for children and adults",
+    keywords: ["art lessons", "art studio", "art teacher", "drawing", "painting classes", "pottery", "ceramics", "art workshops"],
   },
 
   // Creative & Media
