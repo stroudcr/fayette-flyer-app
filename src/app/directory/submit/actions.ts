@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { SITE_CONFIG } from "@/lib/seo/constants";
-import { getCategory, upgradeHref } from "@/lib/directory";
+import { getCategory, upgradeHref, locationLabel, fullAddress } from "@/lib/directory";
 import { getGuideBusinesses } from "@/lib/directory/data";
 import type { FieldErrors } from "@/lib/guide/content";
 import { emailAdmins } from "@/lib/guide/email";
@@ -28,11 +28,13 @@ function upgradePreview(parsed: ReturnType<typeof parseFreeForm>): UpgradePrevie
     name: c.name,
     categoryHeading: getCategory(parsed.category)?.heading ?? "Local businesses",
     city: c.town,
+    location: locationLabel(c),
     street: c.address.suite ? `${c.address.street}, ${c.address.suite}` : c.address.street,
     phone: c.phone,
     href: upgradeHref({
       name: c.name,
       category: parsed.category,
+      businessType: c.businessType,
       street: c.address.street,
       suite: c.address.suite,
       city: c.town,
@@ -67,7 +69,8 @@ export async function submitFreeListing(_previous: FreeState, form: FormData): P
     await emailAdmins(`Free listing ${original ? "claim" : "submission"} to review: ${c.name}`, [
       `${c.name} submitted a free ${original ? "listing claim" : "listing"} for your approval. Nothing has been published.`,
       `Contact: ${parsed.contactName} (${parsed.contactRole}), ${parsed.email}`,
-      `Business: ${c.name}. Address: ${c.address.street}${c.address.suite ? `, ${c.address.suite}` : ""}, ${c.town}, GA ${c.address.zip}. Phone: ${c.phone ?? "Not provided"}. Website: ${c.website ?? "Not provided"}.`,
+      `Business: ${c.name}. Location: ${fullAddress(c)}. Phone: ${c.phone ?? "Not provided"}. Website: ${c.website ?? "Not provided"}.`,
+      ...(c.categorySuggestion ? [`Category request: ${c.categorySuggestion}`] : []),
       ...(original ? [`Existing listing: ${SITE_CONFIG.url}/directory/${original.category}/${original.slug}`] : []),
       "Review the details and approve or decline the submission:",
       `${SITE_CONFIG.url}/directory/admin`,

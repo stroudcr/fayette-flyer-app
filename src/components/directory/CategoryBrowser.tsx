@@ -16,6 +16,7 @@ export interface ListingCard {
   href: string;
   featured: boolean;
   town: string;
+  location: string;
   street: string;
   phone?: string;
   tel?: string;
@@ -113,7 +114,7 @@ export function CategoryBrowser({ listings, listHeading, emptyState, afterList, 
                           {listing.name}
                         </Link>
                         <div className="mt-0.5 text-sm text-slate/80">
-                          {listing.town} · {listing.street}
+                          {listing.location}{listing.street ? ` · ${listing.street}` : ""}
                           {listing.phone && listing.tel && (
                             <>
                               {" · "}
@@ -190,7 +191,7 @@ function FeaturedCard({ listing }: { listing: ListingCard }) {
           <Link href={listing.href}>{listing.name}</Link>
         </h3>
         <p className="mt-1 text-sm text-slate/80">
-          {listing.town} · {listing.street}
+          {listing.location}{listing.street ? ` · ${listing.street}` : ""}
         </p>
         {listing.summary && <p className="mt-3 leading-[26px]">{listing.summary}</p>}
         {(listing.perkTitle || listing.tags.length > 0) && (

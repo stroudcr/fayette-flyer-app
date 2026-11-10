@@ -3,6 +3,8 @@ import type { SITE_CONFIG } from "@/lib/seo/constants";
 /** One of the towns the Flyer covers. */
 export type Town = (typeof SITE_CONFIG.cities)[number];
 
+export type BusinessType = "storefront" | "service-area" | "online-only";
+
 export type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 /** 24-hour "HH:MM" times, e.g. { opens: "08:00", closes: "18:00" }. */
@@ -55,6 +57,8 @@ export interface BusinessPhoto {
 }
 
 export interface Business {
+  /** Missing on older listings, which retain their storefront display. */
+  businessType?: BusinessType;
   /** URL slug, unique within the guide: lowercase letters, numbers and dashes. */
   slug: string;
   name: string;

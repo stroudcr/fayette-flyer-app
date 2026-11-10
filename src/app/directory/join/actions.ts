@@ -9,17 +9,19 @@ import { requestOrigin } from "@/lib/guide/origin";
 import { createCheckoutSession } from "@/lib/guide/stripe";
 
 export interface JoinState {
+  attempt?: number;
   errors?: FieldErrors;
   message?: string;
   values?: Record<string, string>;
 }
 
 export async function startCheckout(_prev: JoinState, form: FormData): Promise<JoinState> {
+  const respond = (state: JoinState): JoinState => ({ ...state, attempt: (_prev.attempt ?? 0) + 1 });
   const values: Record<string, string> = {};
   for (const [key, value] of form.entries()) if (typeof value === "string") values[key] = value;
 
   const { errors, content, category, email, plan } = parseJoinForm(form);
-  if (Object.keys(errors).length) return { errors, values };
+  if (Object.keys(errors).length) return respond({ errors, values });
 
   let checkoutUrl: string;
   try {
@@ -38,13 +40,13 @@ export async function startCheckout(_prev: JoinState, form: FormData): Promise<J
     checkoutUrl = session.url;
   } catch (error) {
     console.error("[guide join] Could not start checkout:", error);
-    return {
+    return respond({
       values,
       message:
         error instanceof GuideConfigError
           ? `Online signup isn't switched on yet. Email ${SITE_CONFIG.email} and we'll set up your listing.`
           : "Something went wrong opening checkout. Please try again in a minute.",
-    };
+    });
   }
   redirect(checkoutUrl);
 }

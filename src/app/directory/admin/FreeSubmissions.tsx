@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ListingDetailsForm } from "./ListingDetailsForm";
+import { BUSINESS_TYPES, isStorefront, locationLabel } from "@/lib/directory/location";
 import { getCategory } from "@/lib/directory";
 import { DAY_LABELS, DAY_ORDER } from "@/lib/directory/format";
 import type { FreeSubmission } from "@/lib/guide/free-content";
@@ -18,18 +20,19 @@ export function FreeSubmissions({ listings }: { listings: FreeSubmission[] }) {
             return (
               <li key={listing.id} className="rounded-[18px] border border-amber-200 bg-white p-6">
                 <h3 className="font-serif text-2xl font-semibold text-navy">{c.name}</h3>
-                <p className="mt-1 text-sm text-slate">{getCategory(listing.category)?.heading} · {c.town} · {listing.claimed_slug ? "Claim existing listing" : "New free listing"} · {formatDate(listing.created_at)}</p>
+                <p className="mt-1 text-sm text-slate">{getCategory(listing.category)?.heading ?? "Category needs review"} · {c.town} · {listing.claimed_slug ? "Claim existing listing" : "New free listing"} · {formatDate(listing.created_at)}</p>
                 {listing.claimed_slug && <p className="mt-2 text-sm"><Link href={`/directory/${listing.category}/${listing.claimed_slug}`}>Compare with existing listing →</Link></p>}
                 <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
                   <div><dt className="font-semibold text-navy">Contact</dt><dd>{listing.contact_name} ({listing.contact_role})<br />{listing.owner_email}</dd></div>
-                  <div><dt className="font-semibold text-navy">Address</dt><dd>{c.address.street}{c.address.suite ? `, ${c.address.suite}` : ""}, {c.town}, GA {c.address.zip}</dd></div>
+                  <div><dt className="font-semibold text-navy">Location</dt><dd>{isStorefront(c) ? <>{c.address.street}{c.address.suite ? `, ${c.address.suite}` : ""}, {c.town}, GA {c.address.zip}</> : locationLabel(c)}<br />{BUSINESS_TYPES.find((t) => t.value === (c.businessType ?? "storefront"))?.label}</dd></div>
                   <div><dt className="font-semibold text-navy">Phone</dt><dd>{c.phone ?? "Not provided"}</dd></div>
                   <div><dt className="font-semibold text-navy">Website</dt><dd>{c.website ? <a href={c.website} target="_blank" rel="noopener noreferrer" className="break-all">{c.website}</a> : "Not provided"}</dd></div>
                   <div className="sm:col-span-2"><dt className="font-semibold text-navy">Hours</dt><dd>{c.hours ? DAY_ORDER.filter((d) => c.hours?.[d] !== undefined).map((d) => `${DAY_LABELS[d].short}: ${c.hours![d]!.length ? c.hours![d]!.map((h) => `${h.opens}–${h.closes}`).join(", ") : "Closed"}`).join(" · ") : "Not provided"}</dd></div>
                 </dl>
+                <ListingDetailsForm id={listing.id} kind="free" category={listing.category} content={c} />
                 <p className="mt-4 text-sm text-slate">Confirm the submitter represents this business before approving a claim. Contact details stay private.</p>
                 <div className="mt-5 flex flex-wrap items-start gap-3">
-                  <form action={approveFreeListing}><input type="hidden" name="id" value={listing.id} /><button type="submit" className="btn-primary min-h-11">Approve and publish</button></form>
+                  <form action={approveFreeListing}><input type="hidden" name="id" value={listing.id} /><button type="submit" disabled={!getCategory(listing.category)} className="btn-primary min-h-11 disabled:opacity-60">Approve and publish</button></form>
                   <details className="rounded-lg border border-navy/15 px-4 py-2"><summary className="cursor-pointer py-1 font-medium text-red-800">Decline submission</summary>
                     <form action={rejectFreeListing} className="mt-3 grid gap-2 pb-2"><input type="hidden" name="id" value={listing.id} /><label htmlFor={`free-reason-${listing.id}`} className="text-sm font-semibold">Reason (emailed to the submitter)</label><textarea id={`free-reason-${listing.id}`} name="reason" rows={2} maxLength={300} className="rounded-md border border-navy/20 px-3 py-2 text-sm" /><button type="submit" className="justify-self-start rounded-md bg-red-700 px-4 py-2 font-medium text-white">Decline</button></form>
                   </details>

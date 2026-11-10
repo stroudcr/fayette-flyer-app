@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ListingDetailsForm } from "./ListingDetailsForm";
+import { BUSINESS_TYPES, isStorefront, locationLabel } from "@/lib/directory/location";
 import { redirect } from "next/navigation";
 import { PRICING, getCategory } from "@/lib/directory";
 import { SITE_CONFIG } from "@/lib/seo/constants";
@@ -50,8 +52,8 @@ function PendingCard({ listing }: { listing: ListingRow }) {
       </div>
       <dl className="mt-4 grid gap-3 sm:grid-cols-2">
         <Detail label="Address">
-          {c.address.street}
-          {c.address.suite ? `, ${c.address.suite}` : ""}, {c.address.city} {c.address.zip}
+          {isStorefront(c) ? <>{c.address.street}{c.address.suite ? `, ${c.address.suite}` : ""}, {c.address.city} {c.address.zip}</> : locationLabel(c)}
+          <br />{BUSINESS_TYPES.find((t) => t.value === (c.businessType ?? "storefront"))?.label}
         </Detail>
         <Detail label="Owner">{listing.owner_email}</Detail>
         <Detail label="Phone">{c.phone ?? "—"}</Detail>
@@ -68,10 +70,11 @@ function PendingCard({ listing }: { listing: ListingRow }) {
           {listing.plan === "yearly" ? `Yearly ($${PRICING.yearly})` : `Monthly ($${PRICING.monthly})`} · Stripe status: {listing.subscription_status ?? "—"}
         </Detail>
       </dl>
+      <ListingDetailsForm id={listing.id} kind="featured" category={listing.category} content={c} />
       <div className="mt-5 flex flex-wrap items-start gap-3">
         <form action={approveListing}>
           <input type="hidden" name="id" value={listing.id} />
-          <button type="submit" className="btn-primary min-h-11">
+          <button type="submit" disabled={!category} className="btn-primary min-h-11 disabled:opacity-60">
             Approve and publish
           </button>
         </form>

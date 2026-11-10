@@ -94,6 +94,8 @@ export async function openBillingPortal(form: FormData) {
 /* ---------- editing ---------- */
 
 export interface EditState {
+  attempt?: number;
+  content?: ListingContent;
   errors?: FieldErrors;
   message?: string;
   saved?: boolean;
@@ -104,12 +106,13 @@ function blobUrls(content: ListingContent): Set<string> {
 }
 
 export async function saveListing(id: string, _prev: EditState, form: FormData): Promise<EditState> {
+  const respond = (state: EditState): EditState => ({ ...state, attempt: (_prev.attempt ?? 0) + 1 });
   const { listing } = await requireOwnedListing(id);
   const { errors, content } = parseListingForm(form, listing.content);
-  if (Object.keys(errors).length) return { errors, message: "Please fix the highlighted fields." };
+  if (Object.keys(errors).length) return respond({ errors, content, message: "Please fix the highlighted fields." });
 
   const updated = await updateContent(listing.id, content);
-  if (!updated) return { message: "Something went wrong saving. Please try again." };
+  if (!updated) return respond({ content, message: "Something went wrong saving. Please try again." });
 
   // Delete photos the owner removed (best effort).
   const kept = blobUrls(content);
@@ -118,5 +121,5 @@ export async function saveListing(id: string, _prev: EditState, form: FormData):
 
   if (isPublic(updated)) refreshGuidePages();
   revalidatePath(`/directory/manage/${listing.id}`);
-  return { saved: true };
+  return respond({ content: updated.content, saved: true });
 }

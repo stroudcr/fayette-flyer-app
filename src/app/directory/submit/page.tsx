@@ -19,7 +19,7 @@ export default async function SubmitPage({ searchParams }: { searchParams: Promi
   const business = claim ? (await getGuideBusinesses()).find((b) => b.slug === claim && b.tier === "free") : undefined;
   if (claim && !business) notFound();
   const defaults: Record<string, string> = business ? {
-    name: business.name, category: business.category, city: business.town, street: business.address.street,
+    businessType: business.businessType ?? "storefront", name: business.name, category: business.category, city: business.town, street: business.address.street,
     suite: business.address.suite ?? "", zip: business.address.zip, phone: business.phone ?? "", website: business.website ?? "",
   } : { category: category ?? "" };
   for (const day of DAY_ORDER) {

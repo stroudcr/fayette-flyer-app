@@ -121,6 +121,11 @@ export async function updateContent(id: string, content: ListingContent) {
   );
 }
 
+/** Staff can resolve a category request while reviewing a featured listing. */
+export async function updateReviewDetails(id: string, category: string, content: ListingContent) {
+  return one(`update guide_listings set category = $2, content = $3::jsonb, updated_at = now() where id = $1 and status = 'pending' returning ${COLUMNS}`, [id, category, JSON.stringify(content)]);
+}
+
 export async function recordPayment(
   id: string,
   fields: {

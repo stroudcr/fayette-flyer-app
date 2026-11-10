@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useActionState, useEffect, useRef } from "react";
+import { CategoryField } from "@/components/directory/CategoryField";
+import { BusinessLocationFields } from "@/components/directory/BusinessLocationFields";
 import { FormField, inputClass } from "@/components/directory/FormField";
 import { DAY_ORDER, DAY_LABELS } from "@/lib/directory/format";
 import { submitFreeListing, type FreeState } from "./actions";
@@ -47,46 +49,8 @@ export function FreeListingForm({ claim, defaults, categoryGroups, pricing }: Pr
         <FormField id="name" label="Business name" error={e.name}>
           <input id="name" name="name" defaultValue={v.name} required maxLength={80} autoComplete="organization" className={inputClass} {...describe("name")} />
         </FormField>
-        <FormField id="category" label="Category" error={e.category} hint="Choose the category that fits your business best.">
-          <select id="category" name="category" defaultValue={v.category ?? ""} required className={inputClass} {...describe("category")}>
-            <option value="" disabled>
-              Choose a category
-            </option>
-            {categoryGroups.map((group) => (
-              <optgroup key={group.name} label={group.name}>
-                {group.options.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </FormField>
-        <div className="grid gap-5 sm:grid-cols-[2fr_1fr]">
-          <FormField id="street" label="Street address" error={e.street}>
-            <input id="street" name="street" defaultValue={v.street} required maxLength={120} autoComplete="address-line1" className={inputClass} {...describe("street")} />
-          </FormField>
-          <FormField id="suite" label="Suite" optional>
-            <input id="suite" name="suite" defaultValue={v.suite} maxLength={40} autoComplete="address-line2" className={inputClass} aria-describedby="suite-help" />
-          </FormField>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="city" label="City" error={e.city}>
-            <input id="city" name="city" defaultValue={v.city} required maxLength={40} autoComplete="address-level2" className={inputClass} {...describe("city")} />
-          </FormField>
-          <FormField id="zip" label="ZIP code" error={e.zip}>
-            <input id="zip" name="zip" defaultValue={v.zip} required inputMode="numeric" maxLength={5} autoComplete="postal-code" className={inputClass} {...describe("zip")} />
-          </FormField>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="phone" label="Phone" optional error={e.phone}>
-            <input id="phone" name="phone" type="tel" defaultValue={v.phone} maxLength={30} autoComplete="tel" className={inputClass} {...describe("phone")} />
-          </FormField>
-          <FormField id="website" label="Website" optional error={e.website}>
-            <input id="website" name="website" defaultValue={v.website} maxLength={200} placeholder="example.com" autoComplete="url" className={inputClass} {...describe("website")} />
-          </FormField>
-        </div>
+        <CategoryField key={`category-${state.attempt ?? 0}`} groups={categoryGroups} values={v} errors={e} />
+        <BusinessLocationFields key={`location-${state.attempt ?? 0}`} values={v} errors={e} />
       </fieldset>
       <details className="rounded-xl border border-navy/15 p-4" open={Object.keys(e).some((key) => key.startsWith("hours.")) || undefined}>
         <summary className="cursor-pointer font-semibold text-navy">Business hours (optional)</summary>

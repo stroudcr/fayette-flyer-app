@@ -23,6 +23,7 @@ import {
   lastUpdated,
   recommendMailto,
   streetLine,
+  locationLabel,
   telHref,
 } from "@/lib/directory";
 import { getGuideBusinesses } from "@/lib/directory/data";
@@ -79,6 +80,7 @@ export default async function CategoryPage({ params }: Props) {
     href: businessHref(b),
     featured: b.tier === "featured",
     town: b.town,
+    location: locationLabel(b),
     street: streetLine(b),
     phone: b.phone,
     tel: b.phone ? telHref(b.phone) : undefined,
@@ -103,7 +105,7 @@ export default async function CategoryPage({ params }: Props) {
     ...(category.faqs ?? []),
     {
       question: `How do I get my business listed?`,
-      answer: `A basic listing is free: fill out the form at fayetteflyer.com/directory/submit with your business name, address, phone and website. We review submissions before they appear in the guide. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement and a Flyer Perk for readers.`,
+      answer: `A basic listing is free: fill out the form at fayetteflyer.com/directory/submit with your business name, category, business type, base city and contact details. We review submissions before they appear in the guide. Featured members ($${PRICING.monthly} a month or $${PRICING.yearly} a year) sign up at fayetteflyer.com/directory/join and get a full profile with photos, top placement and a Flyer Perk for readers.`,
     },
   ];
 

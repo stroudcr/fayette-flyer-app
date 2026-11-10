@@ -1,5 +1,6 @@
 import type { Business } from "@/lib/directory/types";
 import { parseBusinessForm, parseHours, type ListingContent } from "./content";
+import { publicLocation } from "@/lib/directory/location";
 
 export interface FreeSubmission {
   id: string;
@@ -34,9 +35,11 @@ export function parseFreeForm(form: FormData) {
 
 /** Private contact information never enters the public business object. */
 export function freeBusiness(row: FreeSubmission, original?: Business): Business {
+  const content = { ...publicLocation(row.content) };
+  delete content.categorySuggestion;
   return {
     ...original,
-    ...row.content,
+    ...content,
     slug: row.slug,
     category: row.category,
     tier: "free",
@@ -50,6 +53,7 @@ export function mergeFreeBusinesses(originals: Business[], submissions: FreeSubm
   const businesses = new Map(originals.map((b) => [b.slug, b]));
   for (const row of submissions) {
     if (row.status !== "live") continue;
+    if (row.category === "other") continue;
     const original = businesses.get(row.slug);
     // A free claim must never replace a featured member.
     if (original?.tier === "featured") continue;

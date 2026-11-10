@@ -14,6 +14,17 @@ export async function freeSubmissions(publicOnly = false): Promise<FreeSubmissio
   return rows.map(normalize);
 }
 
+export async function getFreeSubmission(id: string): Promise<FreeSubmission | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  const rows = await sql<FreeSubmission>(`select ${COLUMNS} from guide_free_submissions where id = $1`, [id]);
+  return rows[0] ? normalize(rows[0]) : null;
+}
+
+export async function updateFreeReviewDetails(id: string, category: string, content: ListingContent) {
+  const rows = await sql<FreeSubmission>(`update guide_free_submissions set category = $2, content = $3::jsonb where id = $1 and status = 'pending' returning ${COLUMNS}`, [id, category, JSON.stringify(content)]);
+  return rows[0] ? normalize(rows[0]) : null;
+}
+
 export async function createFreeSubmission(input: {
   content: ListingContent; category: string; email: string; contactName: string; contactRole: string;
   claim: string; requesterHash: string; existingSlugs: string[];

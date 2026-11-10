@@ -3,6 +3,8 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { CATEGORIES } from "@/lib/directory/categories";
 import { DAY_ORDER } from "@/lib/directory/format";
 import { TAG_KEYS } from "@/lib/directory/tags";
+import { BUSINESS_TYPES, isStorefront, publicLocation } from "@/lib/directory/location";
+import type { BusinessType } from "@/lib/directory/types";
 import type { Business, BusinessPhoto, DayKey, FlyerPerk, TagKey, WeeklyHours } from "@/lib/directory/types";
 
 export type ListingStatus = "draft" | "pending" | "live" | "hidden" | "rejected" | "canceled";
@@ -10,6 +12,9 @@ export type Plan = "monthly" | "yearly";
 
 /** What an owner controls. Stored as JSON on the listing row. */
 export interface ListingContent {
+  businessType?: BusinessType;
+  /** Staff-only explanation when the submitted category is Other. */
+  categorySuggestion?: string;
   name: string;
   /** The city the owner typed on the form (stored as `town` for older listings). */
   town: string;
@@ -87,8 +92,9 @@ export function isEmail(value: string): boolean {
 
 /** Converts a database listing to the shape the directory pages render. */
 export function toBusiness(row: ListingRow): Business {
-  const c = row.content;
+  const c = publicLocation(row.content);
   return {
+    businessType: c.businessType,
     slug: row.slug,
     name: c.name,
     category: row.category,
@@ -134,7 +140,7 @@ function normalizeWebsite(raw: string): string | undefined | null {
   const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
   try {
     const url = new URL(candidate);
-    if (!url.hostname.includes(".")) return null;
+    if (!url.hostname.includes(".") || !["https:", "http:"].includes(url.protocol) || url.username || url.password) return null;
     return url.toString().replace(/\/$/, "");
   } catch {
     return null;
@@ -203,10 +209,38 @@ function parsePhotos(form: FormData, errors: FieldErrors): BusinessPhoto[] | und
 }
 
 /** Basic business details shared by free submissions and featured signup. */
-export function parseBusinessForm(form: FormData) {
-  const errors: FieldErrors = {};
-  const name = text(form, "name", 80);
+export const OTHER_CATEGORY = "other";
+
+export function parseCategory(form: FormData, errors: FieldErrors) {
   const category = text(form, "category", 60);
+  const categorySuggestion = category === OTHER_CATEGORY ? text(form, "categorySuggestion", 500) : "";
+  if (category !== OTHER_CATEGORY && !CATEGORIES.some((c) => c.slug === category)) errors.category = "Pick a category or choose Other / My category isn't listed.";
+  if (category === OTHER_CATEGORY && categorySuggestion.length < 3) errors.categorySuggestion = "Tell us what your business offers so we can choose a category.";
+  return { category, categorySuggestion: optional(categorySuggestion) };
+}
+
+export function hasPublicCategory(category: string): boolean {
+  return CATEGORIES.some((c) => c.slug === category);
+}
+
+export function listingRequirements(content: ListingContent): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!BUSINESS_TYPES.some((t) => t.value === (content.businessType ?? "storefront"))) errors.businessType = "Choose how your business operates.";
+  if (!isCity(content.town)) errors.city = "Enter your base city.";
+  if (isStorefront(content)) {
+    if (content.address.street.length < 3) errors.street = "Enter your street address.";
+    if (!/^\d{5}$/.test(content.address.zip)) errors.zip = "Enter a 5-digit ZIP code.";
+  }
+  if (content.website && normalizeWebsite(content.website) === null) errors.website = "Enter a full web address, like example.com.";
+  if (content.businessType === "online-only" && !content.website) errors.website = "Enter your website or online shop link.";
+  return errors;
+}
+
+export function parseBusinessForm(form: FormData, existingType?: BusinessType) {
+  const errors: FieldErrors = {};
+  const businessType = (text(form, "businessType", 30) || existingType || "storefront") as BusinessType;
+  const name = text(form, "name", 80);
+  const { category, categorySuggestion } = parseCategory(form, errors);
   const town = normalizeCity(text(form, "city", 40));
   const street = text(form, "street", 120);
   const suite = text(form, "suite", 40);
@@ -216,21 +250,20 @@ export function parseBusinessForm(form: FormData) {
   const website = normalizeWebsite(text(form, "website", 200));
 
   if (name.length < 2) errors.name = "Enter your business name.";
-  if (!CATEGORIES.some((c) => c.slug === category)) errors.category = "Pick the category that fits best.";
-  if (!isCity(town)) errors.city = "Enter your city.";
-  if (street.length < 3) errors.street = "Enter your street address.";
-  if (!/^\d{5}$/.test(zip)) errors.zip = "Enter a 5-digit ZIP code.";
   if (!isEmail(email)) errors.email = "Enter an email you check. You'll use it to sign in.";
   if (phone === null) errors.phone = "Enter a 10-digit phone number.";
   if (website === null) errors.website = "Enter a full web address, like example.com.";
 
   const content: ListingContent = {
+    businessType,
+    categorySuggestion,
     name,
     town,
-    address: { street, suite: optional(suite), city: town, state: "GA", zip },
+    address: isStorefront({ businessType }) ? { street, suite: optional(suite), city: town, state: "GA", zip } : { street: "", city: town, state: "GA", zip: "" },
     phone: phone ?? undefined,
     website: website ?? undefined,
   };
+  Object.assign(errors, listingRequirements(content));
   return { errors, content, category, email };
 }
 
@@ -244,14 +277,12 @@ export function parseJoinForm(form: FormData) {
 
 /** Every owner-editable field, from the manage form. */
 export function parseListingForm(form: FormData, existing: ListingContent) {
-  const errors: FieldErrors = {};
-  const name = text(form, "name", 80);
-  const town = normalizeCity(text(form, "city", 40));
-  const street = text(form, "street", 120);
-  const suite = text(form, "suite", 40);
-  const zip = text(form, "zip", 10);
-  const phone = normalizePhone(text(form, "phone", 30));
-  const website = normalizeWebsite(text(form, "website", 200));
+  const parsed = parseBusinessForm(form, existing.businessType);
+  const errors = parsed.errors;
+  delete errors.email;
+  delete errors.category;
+  delete errors.categorySuggestion;
+  const { name, town, phone, website } = parsed.content;
   const tagline = text(form, "tagline", 140);
   const description = text(form, "description", 3000)
     .split(/\n\s*\n/)
@@ -266,12 +297,6 @@ export function parseListingForm(form: FormData, existing: ListingContent) {
   const perkDetails = text(form, "perk.details", 200);
   const perkCode = text(form, "perk.code", 20).toUpperCase();
 
-  if (name.length < 2) errors.name = "Enter your business name.";
-  if (!isCity(town)) errors.city = "Enter your city.";
-  if (street.length < 3) errors.street = "Enter your street address.";
-  if (!/^\d{5}$/.test(zip)) errors.zip = "Enter a 5-digit ZIP code.";
-  if (phone === null) errors.phone = "Enter a 10-digit phone number.";
-  if (website === null) errors.website = "Enter a full web address, like example.com.";
   if (description.length > MAX_PARAGRAPHS) errors.description = `Keep it to ${MAX_PARAGRAPHS} short paragraphs.`;
   if (services.length > MAX_SERVICES) errors.services = `List up to ${MAX_SERVICES} services.`;
   if (!perkTitle && (perkDetails || perkCode)) errors["perk.title"] = "Give your perk a short headline.";
@@ -281,9 +306,10 @@ export function parseListingForm(form: FormData, existing: ListingContent) {
 
   const content: ListingContent = {
     ...existing,
+    businessType: parsed.content.businessType,
     name,
     town,
-    address: { street, suite: optional(suite), city: town, state: "GA", zip },
+    address: parsed.content.address,
     phone: phone ?? undefined,
     website: website ?? undefined,
     tagline: optional(tagline),

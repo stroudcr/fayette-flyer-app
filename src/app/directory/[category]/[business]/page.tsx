@@ -14,6 +14,7 @@ import {
   getBusiness,
   getCategory,
   isBusinessIndexable,
+  isStorefront,
   updateMailto,
 } from "@/lib/directory";
 import { getGuideBusinesses, getOwnerManagedSlugs } from "@/lib/directory/data";
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${business.name} | ${capitalize(category.singular)} in ${business.town}, GA | ${SITE_CONFIG.name}`,
     description: summary
       ? truncate(summary)
-      : `${business.name} is a ${category.singular} in ${business.town}, GA. Address, phone, hours and more in the ${SITE_CONFIG.name} ${GUIDE_NAME}.`,
+      : `${business.name} is a ${category.singular} in ${business.town}, GA. ${isStorefront(business) ? "Address, phone, hours" : "Website, contact details"} and more in the ${SITE_CONFIG.name} ${GUIDE_NAME}.`,
     path: businessHref(business),
     index: isBusinessIndexable(business),
     image: photo ? { url: absoluteUrl(photo.src), alt: photo.alt } : undefined,

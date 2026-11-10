@@ -2,6 +2,7 @@
 
 import { useActionState, useRef, useState } from "react";
 import Image from "next/image";
+import { BusinessLocationFields } from "@/components/directory/BusinessLocationFields";
 import { FormField, inputClass } from "@/components/directory/FormField";
 import { DAY_LABELS, DAY_ORDER } from "@/lib/directory/format";
 import type { BusinessPhoto, DayKey, TagKey } from "@/lib/directory/types";
@@ -17,8 +18,9 @@ interface EditListingFormProps {
   maxPhotos: number;
 }
 
-export function EditListingForm({ listingId, content, tags, maxPhotos }: EditListingFormProps) {
+export function EditListingForm({ listingId, content: initialContent, tags, maxPhotos }: EditListingFormProps) {
   const [state, action, pending] = useActionState<EditState, FormData>(saveListing.bind(null, listingId), {});
+  const content = state.content ?? initialContent;
   const e = state.errors ?? {};
   const describe = (id: string) => ({ "aria-describedby": `${id}-help`, "aria-invalid": e[id] ? true : undefined });
 
@@ -55,7 +57,7 @@ export function EditListingForm({ listingId, content, tags, maxPhotos }: EditLis
   const perk = content.perk;
 
   return (
-    <form action={action} className="grid gap-10" noValidate>
+    <form key={state.attempt ?? 0} action={action} className="grid gap-10" noValidate>
       <div aria-live="polite">
         {state.message && (
           <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-800">
@@ -101,30 +103,7 @@ export function EditListingForm({ listingId, content, tags, maxPhotos }: EditLis
 
       <fieldset className="grid gap-5">
         <legend className="mb-1 font-serif text-2xl font-semibold text-navy">Contact and location</legend>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="phone" label="Phone" optional error={e.phone}>
-            <input id="phone" name="phone" type="tel" defaultValue={content.phone} maxLength={30} className={inputClass} {...describe("phone")} />
-          </FormField>
-          <FormField id="website" label="Website" optional error={e.website}>
-            <input id="website" name="website" defaultValue={content.website} maxLength={200} placeholder="example.com" className={inputClass} {...describe("website")} />
-          </FormField>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-[2fr_1fr]">
-          <FormField id="street" label="Street address" error={e.street}>
-            <input id="street" name="street" defaultValue={content.address.street} required maxLength={120} className={inputClass} {...describe("street")} />
-          </FormField>
-          <FormField id="suite" label="Suite" optional>
-            <input id="suite" name="suite" defaultValue={content.address.suite} maxLength={40} className={inputClass} aria-describedby="suite-help" />
-          </FormField>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <FormField id="city" label="City" error={e.city}>
-            <input id="city" name="city" defaultValue={content.town} required maxLength={40} autoComplete="address-level2" className={inputClass} {...describe("city")} />
-          </FormField>
-          <FormField id="zip" label="ZIP code" error={e.zip}>
-            <input id="zip" name="zip" defaultValue={content.address.zip} inputMode="numeric" maxLength={5} className={inputClass} {...describe("zip")} />
-          </FormField>
-        </div>
+        <BusinessLocationFields values={{ businessType: content.businessType ?? "storefront", city: content.town, street: content.address.street, suite: content.address.suite ?? "", zip: content.address.zip, phone: content.phone ?? "", website: content.website ?? "" }} errors={e} />
       </fieldset>
 
       <fieldset>

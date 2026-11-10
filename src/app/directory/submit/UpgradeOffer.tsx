@@ -7,6 +7,7 @@ export interface UpgradePreview {
   name: string;
   categoryHeading: string;
   city: string;
+  location: string;
   street: string;
   phone?: string;
   /** Featured signup link, pre-filled with these details. */
@@ -50,7 +51,7 @@ export function UpgradeOffer({ preview, pricing }: { preview: UpgradePreview; pr
           <div className="rounded-2xl border border-navy/[0.12] bg-paper px-5 py-4">
             <p className="font-serif text-xl font-semibold text-navy">{preview.name}</p>
             <p className="mt-0.5 text-sm text-slate/80">
-              {preview.city} · {preview.street}
+              {preview.location}{preview.street ? ` · ${preview.street}` : ""}
               {preview.phone ? ` · ${preview.phone}` : ""}
             </p>
           </div>
@@ -67,10 +68,10 @@ export function UpgradeOffer({ preview, pricing }: { preview: UpgradePreview; pr
               <span className="sponsor-label">Featured member</span>
               <p className="mt-2 font-serif text-[22px] font-semibold leading-tight text-navy">{preview.name}</p>
               <p className="mt-0.5 text-sm text-slate/80">
-                {preview.city} · {preview.street}
+                {preview.location}{preview.street ? ` · ${preview.street}` : ""}
               </p>
               <p className="mt-2.5 text-[15px] italic leading-6 text-slate/80">
-                Your description: tell neighbors what makes {preview.name} worth a visit.
+                Your description: tell neighbors what makes {preview.name} worth choosing.
               </p>
               <p className="mt-3">
                 <span className="rounded-md border border-dashed border-gold px-2.5 py-1 text-xs font-medium text-navy">

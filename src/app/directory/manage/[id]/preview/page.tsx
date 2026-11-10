@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { BusinessProfile } from "@/components/directory/BusinessProfile";
 import { getCategory } from "@/lib/directory";
 import { SITE_CONFIG } from "@/lib/seo/constants";
@@ -29,8 +29,10 @@ export default async function PreviewPage({ params }: Props) {
   if (!listing || listing.status === "draft") redirect("/directory/manage");
   if (!session.isAdmin && normalizeEmail(listing.owner_email) !== session.email) redirect("/directory/manage");
 
-  const category = getCategory(listing.category);
-  if (!category) notFound();
+  const category = getCategory(listing.category) ?? {
+    slug: "", name: "Category under review", heading: "Category under review", singular: "local business",
+    group: "", schemaType: "LocalBusiness", blurb: "",
+  };
   const status = describeStatus(listing);
 
   return (

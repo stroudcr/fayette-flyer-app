@@ -8,6 +8,7 @@ import {
   businessHref,
   categoryHref,
   streetLine,
+  isStorefront,
 } from "./index";
 import type { Business, Category } from "./types";
 
@@ -32,7 +33,7 @@ export function generateLocalBusinessSchema(business: Business, category: Catego
 
   return {
     "@context": "https://schema.org",
-    "@type": category.schemaType,
+    "@type": business.businessType === "online-only" ? "OnlineStore" : category.schemaType,
     "@id": `${url}#business`,
     name: business.name,
     url: business.website ?? url,
@@ -43,13 +44,11 @@ export function generateLocalBusinessSchema(business: Business, category: Catego
     ...(business.phone ? { telephone: business.phone } : {}),
     address: {
       "@type": "PostalAddress",
-      streetAddress: streetLine(business),
+      ...(isStorefront(business) ? { streetAddress: streetLine(business), postalCode: business.address.zip } : {}),
       addressLocality: business.address.city,
       addressRegion: business.address.state,
-      postalCode: business.address.zip,
       addressCountry: "US",
     },
-    areaServed: COUNTY_AREA,
     ...(business.photos?.length ? { image: business.photos.map((p) => absoluteUrl(p.src)) } : {}),
     ...(hours.length ? { openingHoursSpecification: hours } : {}),
   };

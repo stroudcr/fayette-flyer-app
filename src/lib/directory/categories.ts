@@ -12,9 +12,20 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   { slug: "pets", name: "Pets" },
   { slug: "professional-services", name: "Professional Services" },
   { slug: "creative-media", name: "Creative & Media" },
+  { slug: "shopping-gifts", name: "Shopping & Gifts" },
 ];
 
 export const CATEGORIES: Category[] = [
+  {
+    slug: "handmade-goods-crafts",
+    name: "Handmade Goods & Crafts",
+    heading: "Handmade Goods & Crafts",
+    singular: "handmade goods and crafts business",
+    group: "shopping-gifts",
+    schemaType: "Store",
+    blurb: "locally made crafts, handmade gifts, artisan goods and custom creations",
+    keywords: ["crafts", "handmade", "artisan", "makers", "gifts", "custom gifts"],
+  },
   // Health & Wellness
   {
     slug: "chiropractors",

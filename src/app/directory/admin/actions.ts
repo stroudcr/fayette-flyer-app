@@ -6,8 +6,9 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { PRICING, getCategory, perDayLabel, upgradeHref } from "@/lib/directory";
 import { sendEmail } from "@/lib/guide/email";
 import { publicUrl, refreshGuidePages, MANAGE_URL } from "@/lib/guide/fulfillment";
-import { getListing, logEvent, setStatus } from "@/lib/guide/listings";
-import { reviewFreeSubmission } from "@/lib/guide/free-listings";
+import { getListing, logEvent, setStatus, updateReviewDetails } from "@/lib/guide/listings";
+import { getFreeSubmission, reviewFreeSubmission, updateFreeReviewDetails } from "@/lib/guide/free-listings";
+import { hasPublicCategory, listingRequirements, parseBusinessForm, type FieldErrors } from "@/lib/guide/content";
 import { createLoginToken, getSession, SIGN_IN_LINK_MINUTES } from "@/lib/guide/session";
 import { cancelAndRefund } from "@/lib/guide/stripe";
 
@@ -32,6 +33,7 @@ export async function approveListing(form: FormData) {
   const admin = await requireAdmin();
   const listing = await listingFrom(form);
   if (listing.status !== "pending" && listing.status !== "hidden") done(`${listing.content.name} can't be approved from its current status.`);
+  if (!hasPublicCategory(listing.category) || Object.keys(listingRequirements(listing.content)).length) done("Choose a public category and complete the business details before publishing.");
 
   const updated = await setStatus(listing.id, "live");
   await logEvent(listing.id, "approved", { by: admin.email });
@@ -109,6 +111,10 @@ export async function sendOwnerSignInLink(form: FormData) {
 
 async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden") {
   const admin = await requireAdmin();
+  if (status === "live") {
+    const current = await getFreeSubmission(String(form.get("id") ?? ""));
+    if (!current || !hasPublicCategory(current.category) || Object.keys(listingRequirements(current.content)).length) done("Choose a public category and complete the business details before publishing.");
+  }
   const reason = String(form.get("reason") ?? "").trim().slice(0, 300);
   const listing = await reviewFreeSubmission(String(form.get("id") ?? ""), status, admin.email, reason);
   if (!listing) done("This submission has already been reviewed or no longer exists.");
@@ -125,6 +131,7 @@ async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden"
         `[Upgrade to featured](${SITE_CONFIG.url}${upgradeHref({
           name: listing.content.name,
           category: listing.category,
+          businessType: listing.content.businessType,
           street: listing.content.address.street,
           suite: listing.content.address.suite,
           city: listing.content.town,
@@ -145,3 +152,29 @@ async function reviewFree(form: FormData, status: "live" | "rejected" | "hidden"
 export async function approveFreeListing(form: FormData) { await reviewFree(form, "live"); }
 export async function rejectFreeListing(form: FormData) { await reviewFree(form, "rejected"); }
 export async function hideFreeListing(form: FormData) { await reviewFree(form, "hidden"); }
+
+export interface ReviewState {
+  attempt?: number;
+  values?: Record<string, string>;
+  errors?: FieldErrors;
+  saved?: boolean;
+  message?: string;
+}
+
+export async function saveReviewDetails(kind: "free" | "featured", id: string, previous: ReviewState, form: FormData): Promise<ReviewState> {
+  await requireAdmin();
+  const respond = (state: ReviewState) => ({ ...state, attempt: (previous.attempt ?? 0) + 1 });
+  const listing = kind === "free" ? await getFreeSubmission(id) : await getListing(id);
+  if (!listing || listing.status !== "pending") return respond({ message: "Only submissions awaiting review can be edited here." });
+  form.set("email", listing.owner_email);
+  const values = Object.fromEntries([...form.entries()].filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  delete values.email;
+  const parsed = parseBusinessForm(form);
+  if (!hasPublicCategory(parsed.category)) parsed.errors.category = "Choose a public category before publishing.";
+  if (Object.keys(parsed.errors).length) return respond({ errors: parsed.errors, values, message: "Please fix the highlighted fields." });
+  const content = { ...listing.content, ...parsed.content };
+  const updated = kind === "free" ? await updateFreeReviewDetails(id, parsed.category, content) : await updateReviewDetails(id, parsed.category, content);
+  if (!updated) return respond({ message: "This submission changed during review. Reload and try again." });
+  revalidatePath("/directory/admin");
+  return respond({ saved: true, message: "Details saved. The submission still needs approval." });
+}

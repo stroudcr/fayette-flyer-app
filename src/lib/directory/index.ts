@@ -2,6 +2,8 @@ import { SITE_CONFIG } from "@/lib/seo/constants";
 import { BUSINESSES } from "./businesses";
 import { CATEGORIES, CATEGORY_GROUPS } from "./categories";
 import type { Business, Category, CategoryGroup, Town } from "./types";
+import { isStorefront, locationLabel } from "./location";
+export { BUSINESS_TYPES, isStorefront, locationLabel, publicLocation } from "./location";
 
 export * from "./types";
 export * from "./format";
@@ -107,12 +109,14 @@ export function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function streetLine(business: Business): string {
+export function streetLine(business: Pick<Business, "address" | "businessType">): string {
+  if (!isStorefront(business)) return "";
   const { street, suite } = business.address;
   return suite ? `${street}, ${suite}` : street;
 }
 
-export function fullAddress(business: Business): string {
+export function fullAddress(business: Pick<Business, "address" | "businessType" | "town">): string {
+  if (!isStorefront(business)) return locationLabel(business);
   const { city, state, zip } = business.address;
   return `${streetLine(business)}, ${city}, ${state} ${zip}`;
 }
@@ -124,10 +128,12 @@ export function telHref(phone: string): string {
 }
 
 export function directionsUrl(business: Business): string {
+  if (!isStorefront(business)) return "";
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${fullAddress(business)}`)}`;
 }
 
 export function mapEmbedUrl(business: Business): string {
+  if (!isStorefront(business)) return "";
   return `https://www.google.com/maps?q=${encodeURIComponent(fullAddress(business))}&output=embed`;
 }
 
@@ -172,13 +178,14 @@ export function perDayLabel(yearlyDollars: number): string {
 }
 
 /** Public business details the featured signup can be pre-filled with. Never the owner's email. */
-export const UPGRADE_FIELDS = ["name", "category", "street", "suite", "city", "zip", "phone", "website"] as const;
+export const UPGRADE_FIELDS = ["name", "category", "businessType", "street", "suite", "city", "zip", "phone", "website"] as const;
 export type UpgradeDetails = Partial<Record<(typeof UPGRADE_FIELDS)[number], string>>;
 
 /** Link to the featured signup, pre-filled with a free listing's details. */
 export function upgradeHref(details: UpgradeDetails): string {
   const params = new URLSearchParams({ plan: "yearly", from: "free" });
   for (const key of UPGRADE_FIELDS) {
+    if (["street", "suite", "zip"].includes(key) && !isStorefront(details)) continue;
     const value = details[key]?.trim();
     if (value) params.set(key, value.slice(0, 200));
   }

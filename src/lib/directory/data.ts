@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { toBusiness } from "@/lib/guide/content";
+import { hasPublicCategory, toBusiness } from "@/lib/guide/content";
 import { hasDatabase } from "@/lib/guide/env";
 import { publicListings } from "@/lib/guide/listings";
 import { freeSubmissions } from "@/lib/guide/free-listings";
@@ -20,7 +20,7 @@ export const getGuideBusinesses = cache(async (): Promise<Business[]> => {
   if (hasDatabase()) {
     try {
       const [paidRows, freeRows] = await Promise.all([publicListings(), freeSubmissions(true)]);
-      paid = paidRows.map(toBusiness);
+      paid = paidRows.filter((row) => hasPublicCategory(row.category)).map(toBusiness);
       free = mergeFreeBusinesses(BUSINESSES, freeRows);
     } catch (error) {
       console.error("[directory] Could not load paid listings:", error);

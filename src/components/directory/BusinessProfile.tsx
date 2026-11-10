@@ -23,6 +23,8 @@ import {
   getGroup,
   mapEmbedUrl,
   streetLine,
+  isStorefront,
+  locationLabel,
   telHref,
   townCode,
 } from "@/lib/directory";
@@ -46,6 +48,7 @@ interface BusinessProfileProps {
 /** The business page layout, shared by the public page and owner/admin previews. */
 export function BusinessProfile({ business, category, others, manage, banner }: BusinessProfileProps) {
   const group = getGroup(category.group);
+  const storefront = isStorefront(business);
   const featured = business.tier === "featured";
   const tags = business.tags ?? [];
   const photos = business.photos ?? [];
@@ -65,7 +68,7 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
             <span aria-hidden="true" className="mx-2 text-gold">›</span>
             <span>{group?.name}</span>
             <span aria-hidden="true" className="mx-2 text-gold">›</span>
-            <Link href={categoryHref(category.slug)}>{category.heading}</Link>
+            {category.slug ? <Link href={categoryHref(category.slug)}>{category.heading}</Link> : <span>{category.heading}</span>}
             <span aria-hidden="true" className="mx-2 text-gold">›</span>
             <span aria-current="page">{business.name}</span>
           </nav>
@@ -89,7 +92,7 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
               )}
               <h1 className="mt-4 font-serif text-[clamp(2.4rem,5vw,3.6rem)] font-semibold leading-[1.02] text-navy">{business.name}</h1>
               <p className="mt-2.5 text-slate/80">
-                {capitalize(category.singular)} in {business.town}, GA
+                {capitalize(category.singular)} · {locationLabel(business)}
               </p>
               {business.tagline && (
                 <p className="mt-5 max-w-[600px] font-serif text-[21px] italic leading-8 text-slate">{business.tagline}</p>
@@ -116,9 +119,10 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
                     className="btn-secondary inline-flex min-h-12 items-center gap-2"
                   >
                     <GlobeIcon className="h-4 w-4" />
-                    Website
+                    {business.businessType === "online-only" ? "Shop online" : "Website"}
                   </TrackedLink>
                 )}
+                {storefront && (
                 <TrackedLink
                   href={directionsUrl(business)}
                   business={business.slug}
@@ -130,6 +134,7 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
                   <PinIcon className="h-4 w-4" />
                   Directions
                 </TrackedLink>
+                )}
               </div>
             </div>
 
@@ -146,11 +151,9 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
               </div>
               <dl className="grid gap-4 px-[22px] pb-6 pt-5 text-[15px]">
                 <div>
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/65">Address</dt>
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/65">{storefront ? "Address" : "Location"}</dt>
                   <dd className="mt-1 leading-[22px]">
-                    {streetLine(business)}
-                    <br />
-                    {city}, {state} {zip}
+                    {storefront ? <>{streetLine(business)}<br />{city}, {state} {zip}</> : locationLabel(business)}
                   </dd>
                 </div>
                 {business.hours && <TodayHours hours={business.hours} />}
@@ -306,14 +309,14 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
             </div>
           )}
 
-          <div className="overflow-hidden rounded-2xl border border-navy/10 bg-white">
-            <iframe
+          {(storefront || tags.length > 0) && <div className="overflow-hidden rounded-2xl border border-navy/10 bg-white">
+            {storefront && <iframe
               title={`Map showing ${business.name}`}
               src={mapEmbedUrl(business)}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="block h-[200px] w-full border-0"
-            />
+            />}
             {tags.length > 0 && (
               <ul className="grid gap-2.5 px-6 py-[18px] text-sm">
                 {tags.map((tag) => (
@@ -324,7 +327,7 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
                 ))}
               </ul>
             )}
-          </div>
+          </div>}
 
           <p className="text-[13px] leading-5 text-slate/80">
             {business.verifiedAt && (
@@ -360,7 +363,7 @@ export function BusinessProfile({ business, category, others, manage, banner }: 
                         {b.name}
                       </span>
                       <span className="mt-0.5 block text-sm text-slate/80">
-                        {b.town}
+                        {locationLabel(b)}
                         {b.tier === "featured" ? " · Featured member" : ""}
                         {b.perk ? " · Flyer Perk" : ""}
                       </span>

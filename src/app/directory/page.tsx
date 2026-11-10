@@ -19,6 +19,7 @@ import {
   guideEdition,
   recentlyAdded,
   townCode,
+  locationLabel,
 } from "@/lib/directory";
 import { getGuideBusinesses } from "@/lib/directory/data";
 import { guideMetadata } from "@/lib/directory/metadata";
@@ -77,7 +78,7 @@ export default async function DirectoryHomePage() {
       return {
         label: b.name,
         href: businessHref(b),
-        meta: `${capitalize(category?.singular ?? "")} · ${b.town}`,
+        meta: `${capitalize(category?.singular ?? "")} · ${locationLabel(b)}`,
         terms: [category?.name, category?.singular, ...(category?.keywords ?? []), b.town].join(" "),
       };
     }),
@@ -271,7 +272,7 @@ export default async function DirectoryHomePage() {
                         {b.name}
                       </span>
                       <span className="mt-0.5 block text-[15px] text-slate/80">
-                        {capitalize(category?.singular ?? "")} · {b.town}
+                        {capitalize(category?.singular ?? "")} · {locationLabel(b)}
                       </span>
                     </span>
                     <span aria-hidden="true" className="hidden font-mono text-gold sm:block">→</span>
