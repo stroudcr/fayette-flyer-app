@@ -248,6 +248,16 @@ export const CATEGORIES: Category[] = [
 
   // Professional Services
   {
+    slug: "business-consulting",
+    name: "Business Consulting",
+    heading: "Business Consulting",
+    singular: "business consultant",
+    group: "professional-services",
+    schemaType: "ProfessionalService",
+    blurb: "strategy, operations, leadership and growth advice for businesses and nonprofits",
+    keywords: ["business consultant", "consulting", "nonprofit advising", "nonprofit consulting", "strategic planning", "organizational development"],
+  },
+  {
     slug: "real-estate",
     name: "Real estate agents",
     heading: "Real Estate Agents",
