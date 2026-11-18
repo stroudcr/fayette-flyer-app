@@ -217,6 +217,40 @@ export default async function IssuePage({ params }: Props) {
           </div>
         </section>
 
+        {/* More from the Flyer: plain links to the events calendar and the
+            Local Business Guide on every issue, so readers and search engines
+            reach both from the archive, not only from the navbar. */}
+        <section className="py-12 bg-white" aria-labelledby="more-from-the-flyer">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2
+              id="more-from-the-flyer"
+              className="font-serif font-bold text-2xl text-navy mb-6"
+            >
+              More from the Fayette Flyer
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link href="/fayette-county-events" className="card group">
+                <div className="font-serif font-bold text-lg text-navy group-hover:text-navy-dark transition-colors">
+                  Things to do in Fayette County this week &rarr;
+                </div>
+                <p className="text-slate text-sm mt-2">
+                  Festivals, markets, live music and public meetings in Peachtree City,
+                  Fayetteville, Tyrone, Brooks and Woolsey.
+                </p>
+              </Link>
+              <Link href="/directory" className="card group">
+                <div className="font-serif font-bold text-lg text-navy group-hover:text-navy-dark transition-colors">
+                  Local Business Guide &rarr;
+                </div>
+                <p className="text-slate text-sm mt-2">
+                  Local restaurants, home services, health care and more across
+                  Fayette County.
+                </p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Navigation between issues */}
         <section className="py-12 bg-paper">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
