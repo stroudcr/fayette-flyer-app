@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { trackNewsletterSignupLead } from "@/lib/meta-pixel";
+import { trackNewsletterSignupGa } from "@/lib/google-analytics";
 
 interface SubscribeFormProps {
   variant?: "hero" | "inline" | "card";
@@ -54,6 +55,7 @@ export function SubscribeForm({
       }
 
       trackNewsletterSignupLead(variant);
+      trackNewsletterSignupGa(variant, campaign);
       setStatus("success");
       setMessage(data.message || "Welcome to the Fayette Flyer!");
       setEmail("");

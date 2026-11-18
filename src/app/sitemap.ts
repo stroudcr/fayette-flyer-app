@@ -12,48 +12,74 @@ import {
 } from "@/lib/directory";
 import { getGuideBusinesses } from "@/lib/directory/data";
 
+/**
+ * lastModified rules
+ *
+ * Google only trusts <lastmod> when it is "consistently and verifiably"
+ * accurate, so every date here is the real date the page's content changed:
+ * - Home, /issues and the events page change when a new issue publishes,
+ *   so they use the newest issue's publish date.
+ * - Guide pages use the newest addedAt/verifiedAt of the listings they show.
+ * - Pages with no reliable change date (about, advertise, contact, privacy)
+ *   leave lastModified out instead of claiming they changed "now".
+ */
+function guideDate(day: string | undefined): Date | undefined {
+  return day ? new Date(`${day}T12:00:00Z`) : undefined;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Issues come first: their dates also set the home, archive and events dates.
+  let issues: Awaited<ReturnType<typeof getAllIssues>> = [];
+  try {
+    issues = await getAllIssues();
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to fetch issues for sitemap:", error);
+    }
+  }
+
+  const newestIssueDate = issues.reduce<Date | undefined>(
+    (newest, issue) => (!newest || issue.publishDate > newest ? issue.publishDate : newest),
+    undefined
+  );
+
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
+      lastModified: newestIssueDate,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${SITE_URL}/issues`,
-      lastModified: new Date(),
+      lastModified: newestIssueDate,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/fayette-county-events`,
-      lastModified: new Date(),
+      lastModified: newestIssueDate,
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/about`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/advertise`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${SITE_URL}/contact`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.3,
     },
@@ -65,43 +91,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const guidePages: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}${DIRECTORY_PATH}`,
-      lastModified: new Date(),
+      lastModified: guideDate(lastUpdated(guideBusinesses)),
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...CATEGORIES.filter((c) => isCategoryIndexable(guideBusinesses, c.slug)).map((c) => {
-      const updated = lastUpdated(guideBusinesses.filter((b) => b.category === c.slug));
-      return {
-        url: `${SITE_URL}${categoryHref(c.slug)}`,
-        lastModified: updated ? new Date(`${updated}T12:00:00Z`) : new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      };
-    }),
+    ...CATEGORIES.filter((c) => isCategoryIndexable(guideBusinesses, c.slug)).map((c) => ({
+      url: `${SITE_URL}${categoryHref(c.slug)}`,
+      lastModified: guideDate(lastUpdated(guideBusinesses.filter((b) => b.category === c.slug))),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     ...guideBusinesses.filter(isBusinessIndexable).map((b) => ({
       url: `${SITE_URL}${businessHref(b)}`,
-      lastModified: new Date(`${b.verifiedAt ?? b.addedAt}T12:00:00Z`),
+      lastModified: guideDate(lastUpdated([b])),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
   ];
 
-  // Dynamic issue pages
-  let issuePages: MetadataRoute.Sitemap = [];
-
-  try {
-    const issues = await getAllIssues();
-    issuePages = issues.map((issue) => ({
-      url: `${SITE_URL}/issues/${issue.slug}`,
-      lastModified: issue.publishDate,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
-  } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Failed to fetch issues for sitemap:", error);
-    }
-  }
+  // Issue pages
+  const issuePages: MetadataRoute.Sitemap = issues.map((issue) => ({
+    url: `${SITE_URL}/issues/${issue.slug}`,
+    lastModified: issue.publishDate,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   return [...staticPages, ...guidePages, ...issuePages];
 }
